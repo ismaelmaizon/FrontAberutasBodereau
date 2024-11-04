@@ -92,7 +92,6 @@ export default function Productos() {
             descripcions.push(descripcion)
         })
         setDescripciones(descripcions)
-
         productos.map((prod)=>{ 
             let id = { label: prod.IdGenerate }
             tipos.map((ti)=>{

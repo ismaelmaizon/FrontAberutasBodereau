@@ -11,13 +11,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
   
 const Demo = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
-  }));
-
+}));
+const URL = import.meta.env.VITE_BACKEND_URL
 
 
 export default function AddLugar () {
-
-
 
     const {createLugar, getLugares , lugares , alert, refresh} = useContext(MiContexto)
 
@@ -81,30 +79,54 @@ export default function AddLugar () {
                     Lugares Existentes
                 </Typography>
                 <Demo>
-                    {
-                        lugares.map((lugar, index)=>{
-                            return (
-                                <List key={index}>
-                                    <ListItem
-                                    secondaryAction={
-                                        <IconButton edge="end" aria-label="delete">
-                                        <DeleteIcon />
-                                        </IconButton>
-                                    }
-                                    >
-                                    <ListItemAvatar>
-                                        <Avatar>
-                                        <AddHomeIcon />
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary={lugar.fullname}
-                                    />
-                                    </ListItem>
-                            </List>
-                            )}
-                        )
-                    }
+                    <List sx={{width: '100%',
+                            bgcolor: 'background.paper',
+                            position: 'relative',
+                            overflow: 'auto',
+                            maxHeight: 300}}>
+                        {
+                            lugares.map((lugar, index)=>{
+                                return (
+                                    <li key={index}>
+                                        <ListItem
+                                        secondaryAction={
+                                            <IconButton edge="end" aria-label="delete"  onClick={ async ()=>{
+                                                const response = await fetch(`http://${URL}/api/lugares/lugares/${lugar.id}`,{
+                                                    method: 'DELETE',
+                                                    headers: {
+                                                    'Content-Type': 'application/json'
+                                                    },
+                                                    credentials: 'include'
+                                                })
+                                                if (response.status == 200) {
+                                                    await alert('success')
+                                                    setTimeout( async ()=>{
+                                                        await getLugares()
+                                                        window.location.reload();
+                                                    }, 1500)
+                                                }else{
+                                                    await alert('error')
+                                                }
+                                                        
+                                            }}  >
+                                            <DeleteIcon />
+                                            </IconButton>
+                                        }
+                                        >
+                                        <ListItemAvatar>
+                                            <Avatar>
+                                            <AddHomeIcon />
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText
+                                            primary={lugar.fullname}
+                                        />
+                                        </ListItem>
+                                </li>
+                                )}
+                            )
+                        }
+                    </List>
                 </Demo>
             </Grid>
             </Box>
