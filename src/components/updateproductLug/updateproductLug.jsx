@@ -13,7 +13,12 @@ import NavBar from "../navbar/navBar";
 export default function UpdateProductLug () {
 
     const {idg, refresh,
-        updateproductolugar,updateStockProduct, alert
+        updateproductolugar,updateStockProduct, alert,
+        getProductos,
+        getProducto, getProductoIms, setProductoUbi, 
+        setProducto,
+        getTipos,
+        setImgs 
     } = useContext(MiContexto)
 
 
@@ -102,7 +107,23 @@ export default function UpdateProductLug () {
                                 console.log(data);
                                 let res = await updateproductolugar(data)
                                 let resStock = await updateStockProduct(data.Idg)
-                                res && resStock ? (alert('success'), refresh(), router('/inicio') ) : alert('error')
+                                if (res && resStock) {
+                                    setProductoUbi([]) 
+                                    setProducto([])
+                                    getTipos()
+                                    setImgs([]) 
+                                    let r = await getProducto(data.Idg)
+                                    let t = await getProductoIms(data.Idg)
+                                    await getProductos()
+                                    r ? ( 
+                                        setProducto(r), 
+                                        t.status != 500 ? setImgs(t) : setImgs([])  
+                                    ) : alert('error'),
+                                    router('/inicio') 
+                                }else{
+                                    alert('error')
+                                }
+                                
                             }}>crear</Button>
                         </Grid>
                         <Grid item xs={6}>

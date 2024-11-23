@@ -9,7 +9,11 @@ import NavBar from "../navbar/navBar";
 
 export default function UpDateProduct () {
 
-    const {tipos, producto, actualizarProducto, alert} = useContext(MiContexto)
+    const {tipos, producto, actualizarProducto, alert,
+        setProductoUbi, 
+        setProducto,
+        setImgs, getProducto, getProductoIms, getProductos
+    } = useContext(MiContexto)
 
     const router = useNavigate()
     const [data, setData] = useState({
@@ -149,12 +153,20 @@ export default function UpDateProduct () {
                     <Grid item xs={6}  >
                         <Button type="submit" variant="contained" size="small" sx={{ width:'200px', margin: 'auto' }} onClick={ async ()=>{
                             console.log(data);
-                            
                             let respon = await actualizarProducto(data)
                             console.log(respon.status);
                             if (respon.status == 200) {
-                                await alert('success')
-                                router('/inicio')
+                                    let r = await getProducto(producto.IdGenerate)
+                                    let t = await getProductoIms(producto.IdGenerate)
+                                    await getProductos()
+                                    r ? ( 
+                                        setProducto(r), 
+                                        t.status != 500 ? setImgs(t) : setImgs([])  
+                                    ) : alert('error')
+                                    setProductoUbi([]) 
+                                    await alert('success')
+
+                                    router('/inicio')
                             } else if (respon.status == 201){
                                 await alert('errorCreate')
                             } else {

@@ -9,16 +9,19 @@ import NavBar from "../navbar/navBar";
 
 export default function AddProducto () {
 
-    const {getTipos, tipos, createProducto, alert} = useContext(MiContexto)
+    const {getTipos, tipos, getLugares, createProducto, insertProdLug, lugares, alert} = useContext(MiContexto)
 
     const router = useNavigate()
     const [file, setFile] = useState(null)
     const [data, setData] = useState({
+        Idg: '',
         Tipo: '',
         Alto: '',
         Ancho: '',
         Lado: '',
         Precio_U: 0,
+        stock: '',
+        Lugar: '',
     });
 
     const lado = [
@@ -48,6 +51,7 @@ export default function AddProducto () {
 
     useEffect(()=>{
         getTipos()
+        getLugares()
     }, [])
 
 
@@ -107,6 +111,34 @@ export default function AddProducto () {
                             placeholder="ingresa imagen"
                         />
                         </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                                required
+                                fullWidth
+                                sx={{height: '10px' , marginBottom: '100px' }}
+                                id="outlined-select-currency"
+                                select
+                                label="Donde ira este producto?"
+                                name="Lugar"
+                                helperText="Porfavor seleccione ubicacion"
+                                onChange={dataFrom}
+                                >
+                                {lugares.map((option, index) => (
+                                    <MenuItem key={index} value={option.id}>
+                                    {option.fullname}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField 
+                                required
+                                fullWidth 
+                                label='Ingrese cantidad de unidades' 
+                                name='stock' 
+                                type="number" 
+                                onChange={dataFrom}/>
+                        </Grid>
                 </Grid>
             </Grid>
             <Grid container direction ='row' sx={{ width:'500px', margin: 'auto' }} spacing={5} >
@@ -119,9 +151,13 @@ export default function AddProducto () {
                         <Button type="submit" variant="contained" size="small" sx={{ width:'200px', margin: 'auto' }} onClick={ async ()=>{
                             console.log(data);
                             let respon = await createProducto(data, file)
-                            console.log(respon.status);
-                            if (respon.status == 200) {
+                            console.log(respon);
+                            console.log(respon.response);
+                            if (respon.response.status == 200) {
+                                console.log(respon.data.product);
+                                data.Idg = respon.data.product
                                 await alert('success')
+                                await insertProdLug(data)
                                 setTimeout(()=>{
                                     window.location.reload();
                                 }, 1500)

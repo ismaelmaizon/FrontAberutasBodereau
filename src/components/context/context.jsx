@@ -303,6 +303,35 @@ const CartProvider = ( { children } ) => {
           return response           
         }
   }
+  //eliminar productos de un lugar
+  const deleteProductoLugar = async (id) =>{
+    console.log(id);
+    
+    try {
+      const response = await fetch(`http://${URL}/api/lugaresProd/deleteProductoLugar/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }, credentials: 'include'
+      });
+      // Manejo de respuestas no autorizadas
+      if (response.status === 401) {
+        console.error('Error 401: No autorizado. Verifica tus credenciales o sesión.');
+        // Aquí puedes redirigir al usuario a la página de login o mostrar un mensaje de error
+        return { status: 401, message: 'No autorizado' };
+      }
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      console.log(response);
+      return response
+    } catch (error) {
+      let response = { status: 500 }
+      console.error('problemas con la consulta:', error);
+      return response  
+    }
+  }
+
   //crear producto
   //const [prodCreado, setPructoCreado] = useState(false)
   const createProducto = async ( data, file ) =>{
@@ -343,8 +372,11 @@ const CartProvider = ( { children } ) => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
+      const data = await response.json();
+      console.log(data);
+      
       setVprod(false)
-      return response
+      return {response, data}
     } catch (error) {
       let response = { status: 500 }
       console.error('problemas con la consulta:', error);
@@ -390,7 +422,7 @@ const CartProvider = ( { children } ) => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      setVprod(false)
+      //setVprod(false)
       return response
     } catch (error) {
       let response = { status: 500 }
@@ -566,10 +598,11 @@ const CartProvider = ( { children } ) => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
+      /*
       console.log(response.status);
       if( response.status == 200) {
         setVprod(false) 
-      } 
+      } */
       return response
     } catch (error) {
       let response = { status: 500 }
@@ -579,6 +612,8 @@ const CartProvider = ( { children } ) => {
   }
   //actualizar stock del producto
   const updateStockProduct = async (id) =>{
+    console.log(id);
+    
     try {
       const response = await fetch(`http://${URL}/api/lugaresProd/upDateStockProducto/${id}`, {
         method: 'PUT',
@@ -1111,8 +1146,8 @@ const CartProvider = ( { children } ) => {
         producto, setProducto, getProducto, idg, setIdg,
         getProductoIms, imgs, setImgs,
         productoUbi, setProductoUbi, getUbiProducto, infoprod, setInfoprod,
-        updateStockProduct,
-        getProductosLugar, productsLug, setProductsLug,
+        updateStockProduct, 
+        getProductosLugar, productsLug, setProductsLug, deleteProductoLugar,
 
         filtrarTipoLadoLug, rows, setRows,
         

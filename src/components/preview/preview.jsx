@@ -136,8 +136,8 @@ export default function Preview () {
                                                         </Grid>
                                                 })}
                                             </Grid>
-                                            <Grid item xs={4} container direction="row" alignContent='flex-start'>
-                                                    <Typography variant="h5" marginBottom={2} >Datos Cliente</Typography>
+                                            <Grid item xs={5} container direction="row" alignContent='flex-start'>
+                                                    <Typography variant="h4" component="h2" margin={2} >Datos Cliente:</Typography>
                                                     <Grid container direction="row" spacing={4} onSubmit={handleSubmit} >
                                                         <Grid item xs={6} container direction='column' spacing={2} >
                                                             <Grid item xs={2}>

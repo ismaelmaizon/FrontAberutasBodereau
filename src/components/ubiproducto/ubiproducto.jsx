@@ -15,25 +15,66 @@ import clases from './ubiproducto.module.css'
 
 export default function Ubiproducto() {
     const {
-        producto,
+        producto, deleteProductoLugar,
         productoUbi, lugares, infoprod, setInfoprod, ubi,
+        updateStockProduct, 
+        setProducto,
+        setProductoUbi,
+        getTipos,
+        setImgs,
+        getProducto,
+        getProductoIms, getProductos,  
         setIdg, alert,
         cart, setCart,
-        refresh
+        refresh,
     } = useContext(MiContexto)
+
+    //Eliminacion de producto
+    const deleteProdLug = async (prod) =>{
+        console.log(prod);
+        let res = await deleteProductoLugar(prod.id)
+        console.log(res);
+        console.log(res.status);
+        if (res.status == 200) {
+            let resp = await updateStockProduct(producto.IdGenerate)
+            console.log('actualiazacion de stock');
+            console.log(resp);
+            
+            if(resp) {
+                setProductoUbi([]) 
+                setProducto([])
+                getTipos()
+                setImgs([]) 
+                let r = await getProducto(producto.IdGenerate)
+                let t = await getProductoIms(producto.IdGenerate)
+                    getProductos()
+                r ? ( 
+                    setProducto(r), 
+                    t.status != 500 ? setImgs(t) : setImgs([])  
+                ) : alert('error')
+                
+            }else{
+                alert('error')
+            }
+        }
+    }
 
 
     useEffect(()=>{
         let info = []
         lugares.map((lug)=>{
+            console.log(lug);
             productoUbi.map((pr)=>{
+                console.log(pr);
                 if (lug.id == pr.id_lugar) {
-                    let resul = { fullname : lug.fullname, stock: pr.stock, id_lugar: lug.id }
+                    let resul = { id: pr.id, fullname : lug.fullname, stock: pr.stock, id_lugar: lug.id, id_producto: pr.id_producto }
                     info.push(resul)
                 }
             })
         })
         setInfoprod(info)
+        console.log(producto);
+        
 
     }, [productoUbi])
 
@@ -44,15 +85,15 @@ export default function Ubiproducto() {
             {
              !ubi ? <div></div> : <div className={clases.ubi} >{
                 infoprod.map((prod, index)=>{
-                            //console.log(prod);
+                            console.log(prod.id);
                             return (<div key={index} className={clases.ubi2} >
                                     <Grid container direction="row" padding={1} boxShadow='1px 1px 5px 1px' sx={{maxWidth: '200px' }} > 
                                         <Grid item xs={6} > 
                                             <CardContent sx={ { display: 'flex', flexDirection: 'column', alignItems: 'center'  } } >
-                                                <p style={{ margin: '1px', fontSize: 15, fontWeight: 'bold' }}>
+                                                <p style={{ margin: '1px', fontSize: 20, fontWeight: 'bold' }}>
                                                 {prod.fullname}
                                                 </p>
-                                                <p style={{ fontSize: 14 }}>
+                                                <p style={{ fontSize: 16 }}>
                                                 Stock: {prod.stock}
                                                 </p>
                                             </CardContent>
@@ -69,7 +110,23 @@ export default function Ubiproducto() {
                                                 </Link>
                                             </Grid>
                                             <Grid item xs={8} marginBottom={1}>
-                                                <Button size="small" color="error" variant="contained" ><DeleteIcon/></Button>
+                                                <Button size="small" color="error" variant="contained" onClick={ async ()=> {
+                                                    Swal.fire({
+                                                        title: "Esta seguro que quiere borrar el producto de este lugar?",
+                                                        showDenyButton: true,
+                                                        showCancelButton: true,
+                                                        confirmButtonText: "Si",
+                                                        denyButtonText: `No`
+                                                      }).then((result) => {
+                                                        //resultado de la respuesta
+                                                        if (result.isConfirmed) {
+                                                          Swal.fire("Producto borrado", "", "success");
+                                                          deleteProdLug(prod)
+                                                        } else if (result.isDenied) {
+                                                          Swal.fire("No se produjo ningun cambio", "", "info");
+                                                        }
+                                                      });
+                                                }} ><DeleteIcon/></Button>
                                             </Grid>
                                             <Grid item xs={8} marginBottom={1}>
                                                 <Button size="small" color="success" variant="contained" onClick={async ()=>{

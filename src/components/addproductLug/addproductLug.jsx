@@ -14,7 +14,11 @@ export default function AddProductLug () {
         getProductos,
         updateStockProduct,
         lugares, idg, refresh,
-        insertProdLug, alert
+        insertProdLug, alert,
+        setProductoUbi, setProducto,
+        getTipos,
+        setImgs, getProducto,
+        getProductoIms
     } = useContext(MiContexto)
 
 
@@ -107,7 +111,23 @@ export default function AddProductLug () {
                             let res = await insertProdLug(data)
                             await updateStockProduct(idg)
                             await getProductos()
-                            res ? (alert('success'), refresh(), router('/inicio') ) : alert('error')
+                            res ? (alert('success'), router('/inicio') ) : alert('error')
+                            if (res) {
+                                setProductoUbi([]) 
+                                setProducto([])
+                                getTipos()
+                                setImgs([]) 
+                                let r = await getProducto(idg)
+                                let t = await getProductoIms(idg)
+                                await getProductos()
+                                r ? ( 
+                                    setProducto(r), 
+                                    t.status != 500 ? setImgs(t) : setImgs([])  
+                                ) : alert('error'),
+                                router('/inicio') 
+                            }else{
+                                alert('error')
+                            }
                         }} >crear</Button>
                     </Grid>
                     <Grid item xs={6}  >
