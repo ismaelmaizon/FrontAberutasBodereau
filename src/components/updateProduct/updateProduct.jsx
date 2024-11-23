@@ -11,7 +11,7 @@ export default function UpDateProduct () {
 
     const {tipos, producto, actualizarProducto, alert,
         setProductoUbi, 
-        setProducto,
+        setProducto, getTipos,
         setImgs, getProducto, getProductoIms, getProductos
     } = useContext(MiContexto)
 
@@ -46,6 +46,7 @@ export default function UpDateProduct () {
     }
 
     useEffect(()=>{
+        getTipos()
         console.log(producto);
         console.log(tipos);
         
