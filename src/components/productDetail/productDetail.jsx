@@ -68,7 +68,7 @@ export default function PorductDetail() {
 
     const {
         alert, view, refresh,
-        tipos,
+        tipos, getTipos,
         producto, deleteProductoImg, setIdg,
         deleteProducto, imgs, addimgProduct, getProductoIms, setImgs, getUbiProducto, setUbi
     } = useContext(MiContexto)    
@@ -223,6 +223,7 @@ export default function PorductDetail() {
                             </Grid>
                             <Grid item xs={10} >
                                 {view == 'view' ?  <Button size="medium" color="secondary" variant="contained" sx={{marginLeft: '5px'}} onClick={ async ()=>{
+                                        await getTipos()
                                         router('/updateProduct')                                     
                                     }} >Modificar prod.</Button> : <div></div>
                                 }   
