@@ -9,7 +9,10 @@ import NavBar from "../navbar/navBar";
 
 export default function AddProducto () {
 
-    const {getTipos, tipos, getLugares, createProducto, insertProdLug, lugares, alert} = useContext(MiContexto)
+    const {getTipos, tipos, 
+        getLugares, createProducto, insertProdLug, lugares, 
+        updateStockProduct, getProductos,
+        alert} = useContext(MiContexto)
 
     const router = useNavigate()
     const [file, setFile] = useState(null)
@@ -156,11 +159,19 @@ export default function AddProducto () {
                             if (respon.response.status == 200) {
                                 console.log(respon.data.product);
                                 data.Idg = respon.data.product
-                                await alert('success')
-                                await insertProdLug(data)
-                                setTimeout(()=>{
-                                    window.location.reload();
-                                }, 1500)
+                                let res = await insertProdLug(data)
+                                if (res){ 
+                                    await updateStockProduct(data.Idg)
+                                    await getProductos() 
+                                    await alert('success')
+                                    setTimeout(()=>{
+                                        window.location.reload();
+                                    }, 1500)
+                                }else{
+                                    alert('error')
+                                }
+                                
+                                
                             } else if (respon.status == 201){
                                 await alert('errorCreate')
                             } else {

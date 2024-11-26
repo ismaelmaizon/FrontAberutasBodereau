@@ -96,6 +96,7 @@ export default function Productos() {
             let id = { label: prod.IdGenerate }
             tipos.map((ti)=>{
                 if (prod.Tipo == ti.id) {
+                    console.log(prod);
                     let newProd = {
                         id: prod.id,
                         col0: prod.IdGenerate, 

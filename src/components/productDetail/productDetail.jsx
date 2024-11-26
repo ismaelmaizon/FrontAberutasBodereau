@@ -263,7 +263,7 @@ export default function PorductDetail() {
                                             if (response.ok) {
                                                 const res = await getProductoIms(producto.IdGenerate) 
                                                 console.log(res);
-                                                res.status != 500 ? (setImgs(res), console.log(producto.IdGenerate),
+                                                res.status != 500 ? (setImgs(res), console.log(producto.IdGenerate), setNum(0),
                                                 alert('success')) : (setImgs([]))
                                             }else{
                                                 alert('error')
