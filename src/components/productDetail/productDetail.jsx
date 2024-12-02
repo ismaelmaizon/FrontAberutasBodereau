@@ -15,7 +15,8 @@ import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import { green, red } from "@mui/material/colors";
 import DeleteIcon from '@mui/icons-material/Delete';
 import ImageSearchIcon from '@mui/icons-material/ImageSearch';
-import Swal from "sweetalert2";
+//alert
+import Swal from 'sweetalert2'
 import Ubiproducto from "../ubiproducto/ubiproducto";
 
 const URL = import.meta.env.VITE_BACKEND_URL
@@ -64,8 +65,6 @@ export default function PorductDetail() {
         }
       };
     //
-
-
     const {
         alert, view, refresh,
         tipos, getTipos,
@@ -228,10 +227,25 @@ export default function PorductDetail() {
                                     }} >Modificar prod.</Button> : <div></div>
                                 }   
                                 {view == 'view' ?  <Button size="medium" color="error" variant="contained" sx={{marginLeft: '5px'}} onClick={ async ()=>{
-                                        console.log(producto.id);
-                                        let res = await deleteProducto(producto.id)
-                                        console.log(res);
-                                        res.ok ? (await alert('success'),  refresh() ,router('/inicio')  ) : alert('error')
+                                        Swal.fire({
+                                            title: "Esta seguro que quiere borrar este producto?",
+                                            showDenyButton: true,
+                                            showCancelButton: true,
+                                            confirmButtonText: "Si",
+                                            denyButtonText: `No`
+                                          }).then( async (result) => {
+                                            //resultado de la respuesta
+                                            if (result.isConfirmed) {
+                                              Swal.fire("Producto borrado", "", "success");
+                                              console.log(producto.id);
+                                              let res = await deleteProducto(producto.id)
+                                              console.log(res);
+                                              res.ok ? (await alert('success'),  refresh() ,router('/inicio')  ) : alert('error')
+                                            } else if (result.isDenied) {
+                                              Swal.fire("No se produjo ningun cambio", "", "info");
+                                            }
+                                        });
+                                        
                                         
                                     }} >eliminar prod.</Button> : <div></div>
                                 }
@@ -256,18 +270,33 @@ export default function PorductDetail() {
                                     </Grid>
                                     <Grid item xs={2} margin='auto' bgcolor={red} >
                                         <Button size="small" color="error" variant="contained" onClick={ async ()=>{
-                                            console.log(imgs[num]);
-                                            console.log(imgs[num].id);
-                                            let response =  await deleteProductoImg(imgs[num].id)
-                                            console.log(response);
-                                            if (response.ok) {
-                                                const res = await getProductoIms(producto.IdGenerate) 
-                                                console.log(res);
-                                                res.status != 500 ? (setImgs(res), console.log(producto.IdGenerate), setNum(0),
-                                                alert('success')) : (setImgs([]))
-                                            }else{
-                                                alert('error')
-                                            }
+                                            Swal.fire({
+                                                title: "Esta seguro que quiere borrar esta imagen",
+                                                showDenyButton: true,
+                                                showCancelButton: true,
+                                                confirmButtonText: "Si",
+                                                denyButtonText: `No`
+                                              }).then( async (result) => {
+                                                //resultado de la respuesta
+                                                if (result.isConfirmed) {
+                                                  Swal.fire("Producto borrado", "", "success");
+                                                    console.log(imgs[num]);
+                                                    console.log(imgs[num].id);
+                                                    let response =  await deleteProductoImg(imgs[num].id)
+                                                    console.log(response);
+                                                    if (response.ok) {
+                                                        const res = await getProductoIms(producto.IdGenerate) 
+                                                        console.log(res);
+                                                        res.status != 500 ? (setImgs(res), console.log(producto.IdGenerate), setNum(0),
+                                                        alert('success')) : (setImgs([]))
+                                                    }else{
+                                                        alert('error')
+                                                    }
+                                                } else if (result.isDenied) {
+                                                  Swal.fire("No se produjo ningun cambio", "", "info");
+                                                }
+                                            });
+                                            
                                         }} > <DeleteIcon fontSize="large"  /></Button>
                                     </Grid>
                                     <Grid item xs={2} margin='auto' bgcolor={red} >

@@ -14,7 +14,7 @@ export default function Dashboard () {
 
     const {
         tipos,
-        venta, alert, setCart, setVenta,
+        venta, alert, setCart, setVenta, deleteVenta, setVprod,
         registrarProdsVenta,updateproductolugar,updateStockProduct
     } = useContext(MiContexto)
 
@@ -311,25 +311,29 @@ export default function Dashboard () {
         <Card sx={{ width: '70%', display: 'flex', flexDirection: 'column', margin: 'auto', marginTop: '20px', marginBottom: '20px', padding: '15px' }} border='solid 0px' boxShadow='5px 2px 15px' >
                                         <Grid container direction='column' margin='auto' >
                                                 <Typography margin='auto' variant="h3" component='h3' fontFamily={'fantasy'} >
-                                                    Venta
+                                                    Venta a Registrar
                                                 </Typography>
                                                 <Typography variant="h5" component='h3' fontFamily={'fantasy'} >
                                                     Cliente:
                                                 </Typography>
                                             <Grid container item xs={2} direction='row' margin={2} >
-                                                    <Grid item xs={6}><Typography variant="body1" component='h3'>Nombre: {cliente.nombre}</Typography></Grid>
-                                                    <Grid item xs={6}><Typography variant="body1" component='h3'>Apellido: {cliente.apellido}</Typography></Grid>
-                                                    <Grid item xs={6}><Typography variant="body1" component='h3'>Telefono: {cliente.cel}</Typography></Grid>
-                                                    <Grid item xs={6}><Typography variant="body1" component='h3'>Email: {cliente.email}</Typography></Grid>
-                                                    <Grid item xs={6}><Typography variant="body1" component='h3'>Provincia: {cliente.provincia} </Typography></Grid>
-                                                    <Grid item xs={6}><Typography variant="body1" component='h3'>Localidad: {cliente.localidad} </Typography></Grid>
-                                                    <Grid item xs={6}><Typography variant="body1" component='h3'>Calle: {cliente.calle} </Typography></Grid>
-                                                    <Grid item xs={6}><Typography variant="body1" component='h3'>Altura: {cliente.altura} </Typography></Grid>
+                                                    <Grid item xs={6}><Typography variant="h6" component='h3'>Nombre: {cliente.nombre}</Typography></Grid>
+                                                    <Grid item xs={6}><Typography variant="h6" component='h3'>Apellido: {cliente.apellido}</Typography></Grid>
+                                                    <Grid item xs={6}><Typography variant="h6" component='h3'>Telefono: {cliente.cel}</Typography></Grid>
+                                                    <Grid item xs={6}><Typography variant="h6" component='h3'>Email: {cliente.email}</Typography></Grid>
+                                                    <Grid item xs={6}><Typography variant="h6" component='h3'>Provincia: {cliente.provincia} </Typography></Grid>
+                                                    <Grid item xs={6}><Typography variant="h6" component='h3'>Localidad: {cliente.localidad} </Typography></Grid>
+                                                    <Grid item xs={6}><Typography variant="h6" component='h3'>Calle: {cliente.calle} </Typography></Grid>
+                                                    <Grid item xs={6}><Typography variant="h6" component='h3'>Altura: {cliente.altura} </Typography></Grid>
                                             </Grid>
-                                            <Grid item xs={2} container direction='row' alignItems='center' >
-                                                <Grid item xs={8} paddingTop={5} paddingBottom={5}>
-                                                    <Typography variant="h5" component='h3' marginBottom={2}>Identificador de Venta:</Typography>
-                                                    <Typography variant="h5" component='h3' marginBottom={2} fontFamily={'fantasy'} >{venta.id_venta}</Typography>
+                                            <Grid item xs={2} container direction='row' alignItems='center'>
+                                                <Grid container item xs={12} paddingTop={5} paddingBottom={5} direction={'column'} >
+                                                    <Grid item xs={4} >
+                                                        <Typography variant="h4" gutterBottom marginBottom={2}>Identificador de la Venta:</Typography>
+                                                    </Grid>
+                                                    <Grid item xs={4} alignSelf={'center'} >
+                                                    <Typography variant="h4" component='h3' color="InfoText" marginBottom={2} fontFamily={'fantasy'}>{venta.id_venta}</Typography>
+                                                    </Grid>
                                                 </Grid>
                                                 <Grid container item xs={12} direction='row' gap={2} paddingBottom={2} >
                                                     <Grid item xs={2} ><Typography variant="body1" component='h3'>Tipo</Typography></Grid>
@@ -348,7 +352,7 @@ export default function Dashboard () {
                                                                         <Grid item xs={2}><Typography variant="body1" component='h3'>{el.idg} </Typography></Grid>
                                                                         <Grid item xs={2}><Typography variant="body1" component='h3'>{el.cantidad}</Typography></Grid>
                                                                         <Grid item xs={2}><Typography variant="body1" component='h3'>{el.lugar}</Typography></Grid>
-                                                                        <Grid item xs={2}><Typography variant="body1" component='h3'>{el.subTotal}</Typography></Grid>
+                                                                        <Grid item xs={2}><Typography variant="body1" component='h3'>${el.subTotal}</Typography></Grid>
                                                             </Grid>
                                                     })
                                                     }
@@ -357,11 +361,16 @@ export default function Dashboard () {
                                         </Grid>
                                         <Grid container padding={2} direction='row' width='100%' marginTop={5} >
                                             <Grid item xs={4}>
-                                                <Typography variant="h5" component='h3' >
+                                                <Typography paddingBottom={3} variant="h5" component='h3' >
                                                     Total: ${venta.total}
                                                 </Typography>
                                                 <Link to = '/inicio' >
-                                                    <Button>cancelar</Button>
+                                                    <Button variant="contained" color='error' onClick={async () =>{
+                                                        let res = await deleteVenta(venta.id_venta)
+                                                        if (res) {
+                                                            router('/inicio')
+                                                        }
+                                                    } }  >cancelar</Button>
                                                 </Link>
                                             </Grid>
                                             <Box sx={{ flexGrow: 5 }} />
@@ -378,7 +387,7 @@ export default function Dashboard () {
                                                     </PDFDownloadLink>
                                                 </Grid>
                                                 <Grid item xs={4}>
-                                                    <Button startIcon={<SendIcon/>} onClick={ async ()=>{
+                                                    <Button variant="contained" color='success' startIcon={<SendIcon/>} onClick={ async ()=>{
                                                     carro.map( async (el)=>{
                                                         let infoProd = {
                                                             id_venta: venta.id_venta,
@@ -411,6 +420,7 @@ export default function Dashboard () {
                                                     alert('success')
                                                     setCart([])
                                                     setVenta({})
+                                                    setVprod(false)
                                                     router('/inicio')
                                                     }} >
                                                         finalizar 

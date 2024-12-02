@@ -11,7 +11,7 @@ export const MiContexto = createContext([])
 const URL = import.meta.env.VITE_BACKEND_URL
 
 
-
+ 
 const CartProvider = ( { children } ) => {
   //vista
   const [vprod, setVprod] = useState(false)
@@ -515,33 +515,33 @@ const CartProvider = ( { children } ) => {
       return response  
     }
   }
-    //eliminar imagen de producto
-    const deleteProductoImg = async (id) => {
-      try {
-        const response = await fetch(`http://${URL}/api/productos/deleteproductoImg/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json'
-          },credentials: 'include'
-        });
-        
-        // Manejo de respuestas no autorizadas
-        if (response.status === 401) {
-          console.error('Error 401: No autorizado. Verifica tus credenciales o sesión.');
-          // Aquí puedes redirigir al usuario a la página de login o mostrar un mensaje de error
-          return { status: 401, message: 'No autorizado' };
-        }
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        console.log(response);
-        return response
-      } catch (error) {
-        let response = { status: 500 }
-        console.error('problemas con la consulta:', error);
-        return response  
+  //eliminar imagen de producto
+  const deleteProductoImg = async (id) => {
+    try {
+      const response = await fetch(`http://${URL}/api/productos/deleteproductoImg/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },credentials: 'include'
+      });
+      
+      // Manejo de respuestas no autorizadas
+      if (response.status === 401) {
+        console.error('Error 401: No autorizado. Verifica tus credenciales o sesión.');
+        // Aquí puedes redirigir al usuario a la página de login o mostrar un mensaje de error
+        return { status: 401, message: 'No autorizado' };
       }
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      console.log(response);
+      return response
+    } catch (error) {
+      let response = { status: 500 }
+      console.error('problemas con la consulta:', error);
+      return response  
     }
+  }
   //añadir producto a un lugar
   const insertProdLug = async (data) => {
     const {Idg, stock, Lugar} =  data
@@ -732,8 +732,6 @@ const CartProvider = ( { children } ) => {
     if (lug && !tipo && !lado) {
       await filterByLugar(lug);
     } else if (tipo && !lado && !lug) {
-      console.log(tipo);
-      
         filterByTipo();
     } else if (lado && !tipo && !lug) {
         filterByLado();
@@ -790,8 +788,6 @@ const CartProvider = ( { children } ) => {
     }
   }
   //obtener ventas
-  const [email, setEmail] = useState('')
-  const [emails, setEmails] = useState([])
   const [ventas, setVentas] = useState([])
   const getVentas = async () =>{
     try {
@@ -933,35 +929,119 @@ const CartProvider = ( { children } ) => {
       return response 
     }
   }
-
+  //eliminar venta
+  const deleteVenta = async (id) =>{
+    try {
+      const response = await fetch(`http://${URL}/api/ventas/deleteVenta/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      });
+      // Manejo de respuestas no autorizadas
+      if (response.status === 401) {
+        console.error('Error 401: No autorizado. Verifica tus credenciales o sesión.');
+        // Aquí puedes redirigir al usuario a la página de login o mostrar un mensaje de error
+        return { status: 401, message: 'No autorizado' };
+      }
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response
+    } catch (error) {
+      let response = { status: 500 }
+      console.error('problemas con la consulta:', error);
+      return response 
+    }
+  }
 
   // Filtro productos
   // rows (filas de la tabla) 
   const [rowsVent, setRowsVent] = useState([])
-  const filtrarEmail = async (email) => {
+  const filtrarEmail = async (email, estado, telefono) => {
+    console.log(email, estado, telefono);
+
+    estados.map((e)=>{
+      if(e.estado == estado){
+        estado = e.id
+      }
+    })
+    
     setRowsVent([]);
     let vent = [];
     
-    ventas.map((cliente)=>{ 
-      if (cliente.email === email) {
-        estados.map((est) =>{
-            if (cliente.estado == est.id) {
-                let newCliente = {
-                    id: cliente.id,
-                    col0: cliente.id_venta, 
-                    col1: cliente.fecha, 
-                    col2: cliente.nombre,
-                    col3: cliente.apellido,
-                    col4: cliente.email,
-                    col5: cliente.cel,
-                    col6: cliente.total,
-                    col7: est.estado
-                }
-                vent.push(newCliente)
+    const addVenta = (venta) => {
+      estados.map((est) =>{
+          if (venta.estado == est.id) {
+              let newCliente = {
+                  id: venta.id,
+                  col0: venta.id_venta, 
+                  col1: venta.fecha, 
+                  col2: venta.nombre,
+                  col3: venta.apellido,
+                  col4: venta.email,
+                  col5: venta.cel,
+                  col6: venta.total,
+                  col7: est.estado
               }
-          })
-      }
-    })
+              vent.push(newCliente)
+            }
+      })  
+    };
+
+    const filterByEmail = () => {
+      console.log('filtrar email');
+      ventas.forEach(venta => {
+          if (email === venta.email) addVenta(venta);
+      });
+    };
+    const filterByEstado = () => {
+      console.log('filtrar estado');
+      ventas.forEach(venta => {
+          if ( estado === venta.estado) addVenta(venta);
+      });
+    };
+    const filterByTelefono = () => {
+      console.log('filtrar email');
+      ventas.forEach(venta => {
+          if (telefono === venta.cel) addVenta(venta);
+      });
+    };
+    const filterByEstadoyEmail = () => {
+      console.log('filtrar estado y email');
+      ventas.forEach(venta => {
+          if ( estado === venta.estado && email === venta.email) addVenta(venta);
+      });
+    };
+    const filterByEstadoyTelefono = () => {
+      console.log('filtrar estado y cel');
+      ventas.forEach(venta => {
+          if ( estado === venta.estado && telefono === venta.cel) addVenta(venta);
+      });
+    };
+    const filterByEmailyTelefono = () => {
+      console.log('filtrar estado y cel');
+      ventas.forEach(venta => {
+          if ( email === venta.email && telefono === venta.cel) addVenta(venta);
+      });
+    };
+
+
+
+    if (email && !estado && !telefono) {
+      filterByEmail()
+    }else if (estado && !email && !telefono ) {
+      filterByEstado()
+    }else if (estado && email && !telefono ) {
+      filterByEstadoyEmail()
+    }else if (telefono && !estado && !email){
+      filterByTelefono()
+    }else if (telefono && estado && !email){
+      filterByEstadoyTelefono()
+    }else if (telefono && email && !estado){
+      filterByEmailyTelefono()
+    }
 
 
 
@@ -1010,14 +1090,29 @@ const CartProvider = ( { children } ) => {
 
   const [idsvent, setidsVent] = useState([])
 
-  const refreshVenta = () =>{
+  const [email, setEmail] = useState('')
+  const [emails, setEmails] = useState([])
+  const [estadoV, setEstadoV] = useState('')
+  const [estadosV, setEstadosV] = useState([])
+  const [telV, setTelV] = useState('')
+  const [telefonosV, setTelefonosV] = useState([])
+
+  const refreshVenta = async () =>{
     setVentainf([])
     setEmail('')
+    setEstadoV('')
+    setTelV('')
     let vents = []
     let ids = []
     let em = []
+    let estadosV = []
+    let telefonosV = []
+    estados.map((est)=>{
+      estadosV.push(est.estado)
+    })
     ventas.map((cliente)=>{ 
         em.push(cliente.email)
+        telefonosV.push(cliente.cel)
         estados.map((est) =>{
             if (cliente.estado == est.id) {
                 let id = { label: cliente.id_venta }
@@ -1040,6 +1135,8 @@ const CartProvider = ( { children } ) => {
     setRowsVent(vents)
     setidsVent(ids)
     setEmails(em)
+    setEstadosV(estadosV)
+    setTelefonosV(telefonosV)
   }
 
   //Alertas
@@ -1161,13 +1258,13 @@ const CartProvider = ( { children } ) => {
         
         cart, setCart, 
         idv, setIdv,
-        emails, setEmails, email, setEmail,
         rowsVent, setRowsVent,
+        emails, setEmails, email, setEmail, estadoV, setEstadoV, estadosV, setEstadosV, telV, setTelV, telefonosV, setTelefonosV,
         filtrarEmail,
         idsvent, setidsVent,
         
         getVentas, ventas, setVentas,
-        getVenta ,ventainf, setVentainf, ventainfProds, setVentainfProds,
+        getVenta ,ventainf, setVentainf, ventainfProds, setVentainfProds, deleteVenta,
         refresh, refreshVenta,
         alert
       }} >

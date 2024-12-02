@@ -18,13 +18,15 @@ export default function Ventas() {
         setVprod, setVent,
         rowsVent, setRowsVent,
         ventas, getProductos, getLugares, getTipos,
-        getVenta, emails, setEmails, email, setEmail,
-        refreshVenta, filtrarEmail
+        getVenta, emails, setEmails, email, setEmail, estadoV, setEstadoV, estadosV, setEstadosV, telV, setTelV, telefonosV, setTelefonosV,
+        refreshVenta, filtrarEmail,
+        alert
     } = useContext(MiContexto)
 
     const router = useNavigate()
     //filas de tabla
     //const [rows, setRows] = useState([])
+    
     
     //ventas    
     const [ventid, setVentid] = useState('')
@@ -34,9 +36,19 @@ export default function Ventas() {
     }
 
     //set email 
-    const handleChange = (event) => {
+    const handleChangeEmail = (event) => {
         //console.log(event.target.innerText)
         setEmail(event.target.innerText)
+    }
+    //set estado 
+    const handleChangeTelefono = (event) => {
+        //console.log(event.target.innerText)
+        setTelV(event.target.innerText)
+    }
+    //set estado 
+    const handleChangeEstado = (event) => {
+        //console.log(event.target.innerText)
+        setEstadoV(event.target.innerText)
     }
 
 
@@ -57,9 +69,16 @@ export default function Ventas() {
         let vents = []
         let ids = []
         let em = []
+        let newEstados = []
+        let telefonosV = []
+
+        estados.map((est)=>{
+            newEstados.push(est.estado)
+        })
         ventas.map((cliente)=>{ 
             em.push(cliente.email)
-            estados.map((est) =>{
+            telefonosV.push(cliente.cel)
+            estados.map((est) =>{                
                 if (cliente.estado == est.id) {
                     let id = { label: cliente.id_venta }
                     let newCliente = {
@@ -81,6 +100,8 @@ export default function Ventas() {
         setRowsVent(vents)
         setidsVent(ids)
         setEmails(em)
+        setEstadosV(newEstados)
+        setTelefonosV(telefonosV)
         
     }, [])
 
@@ -117,14 +138,38 @@ export default function Ventas() {
                     id="combo-box-demo"
                     options={emails}
                     sx={{ width: 300 }}
-                    onChange={handleChange}
+                    onChange={handleChangeEmail}
                     renderInput={(params) => <TextField {...params} label="Email's" />}
+                    />  
+                    </FormControl>
+                </Grid>
+                <Grid item xs={6} >
+                    <FormControl sx={{ marginTop: '25px' , width: '100%', paddingBottom: '25px'}}>
+                    <Autocomplete
+                    disablePortal
+                    id="combo-box-demo"
+                    options={telefonosV}
+                    sx={{ width: 300 }}
+                    onChange={handleChangeTelefono}
+                    renderInput={(params) => <TextField {...params} label="telefonos" />}
+                    />  
+                    </FormControl>
+                </Grid>
+                <Grid item xs={6} >
+                    <FormControl sx={{ marginTop: '25px' , width: '100%', paddingBottom: '25px'}}>
+                    <Autocomplete
+                    disablePortal
+                    id="combo-box-demo"
+                    options={estadosV}
+                    sx={{ width: 300 }}
+                    onChange={handleChangeEstado}
+                    renderInput={(params) => <TextField {...params} label="Estados" />}
                     />  
                     </FormControl>
                 </Grid>
                 <Grid item xs={6}>
                     <Button variant="contained"  sx={{padding: '10px' }} endIcon={<SearchIcon />} onClick={ async ()=>{ 
-                        let vent = await filtrarEmail(email) 
+                        let vent = await filtrarEmail(email, estadoV, telV) 
                         if (vent.length != 0 ){
                             setRowsVent(vent)
                         }else{
@@ -149,49 +194,6 @@ export default function Ventas() {
                     <Button variant="contained"  sx={{padding: '15px' }} endIcon={<SearchIcon />} onClick={ async ()=>{ 
                         await getVenta(ventid)
                         //console.log(res);
-                        }} >ver</Button>
-                </Grid>
-            </Grid>
-            {/********************* */ }
-            <Grid sx={{ display: { xs: 'grid', md: 'none' } }} container direction="column" justifyContent="flex-start" alignItems="center" >
-            <Grid item xs={6} >
-                    <FormControl sx={{ marginTop: '25px' , width: '100%', paddingBottom: '25px'}}>
-                    <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={emails}
-                    sx={{ width: 300 }}
-                    onChange={handleChange}
-                    renderInput={(params) => <TextField {...params} label="Email's" />}
-                    />  
-                    </FormControl>
-                </Grid>
-                <Grid item xs={6}>
-                    <Button variant="contained"  sx={{padding: '10px' }} endIcon={<SearchIcon />} onClick={ async ()=>{ 
-                        let vent = await filtrarEmail(email) 
-                        if (vent.length != 0 ){
-                            setRowsVent(vent)
-                        }else{
-                            alert('error')
-                        }
-                        }} >filtrar</Button>
-                </Grid>
-                <Grid item xs={6}>
-                    <FormControl sx={{ marginTop: '25px' , width: '100%', paddingBottom: '25px'}}>
-                    <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={idsvent}
-                    sx={{ width: 300 }}
-                    onChange={handleChangeProd}
-                    renderInput={(params) => <TextField {...params} label="ID's" />}
-                    />  
-                    </FormControl>
-                </Grid>
-                <Grid item xs={2}>
-                    <Button variant="contained"  sx={{padding: '10px', marginBottom: '15px'}} endIcon={<SearchIcon />} onClick={async()=>{ 
-                        let res = await getVenta(ventid)
-                        console.log(res);
                         }} >ver</Button>
                 </Grid>
             </Grid>
