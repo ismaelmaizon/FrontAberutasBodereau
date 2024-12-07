@@ -7,12 +7,12 @@ import Swal from "sweetalert2";
 import {Button} from '@mui/material';
 //productos
 import Productos from "../productos/productos";
-
 //icons
 import Ventas from "../ventas/ventas";
 import Venta from "../venta/venta";
 import NavBar from "../navbar/navBar";
 import PorductDetail from "../productDetail/productDetail";
+
 
 export default function Inicio() {
     const {
@@ -26,7 +26,9 @@ export default function Inicio() {
 
     const router = useNavigate()
 
-    useEffect(()=>{        
+    
+
+    useEffect(()=>{ 
         let info = []
         lugares.map((lug)=>{
             productoUbi.map((pr)=>{
@@ -51,18 +53,22 @@ export default function Inicio() {
         <div>
             <NavBar/>
             {
-               vprod || vent ? ( (vprod ? ( <div>
-                <div>
-                    <PorductDetail/>
-                </div> 
-                <div style={{ width: '100%', marginTop: '50px' }}><Productos/></div> 
+               vprod || vent ? ( (vprod ? ( <div style={{ width: '95%', margin: 'auto' }}>
+                    <div>
+                        <PorductDetail/>
+                    </div> 
+                    <div style={{ width: '100%', marginTop: '50px' }}>
+                        <Productos/>
+                    </div> 
                </div> 
                ) :  (
-                <div>
-                <div>
-                <Venta/>
-                </div>
-                <div style={{ width: '100%', marginTop: '50px' }}><Ventas/></div> 
+                <div style={{ width: '95%', margin: 'auto' }}> 
+                    <div>
+                        <Venta/>
+                    </div>
+                    <div style={{ width: '100%', marginTop: '50px' }}>
+                        <Ventas/>
+                    </div> 
                 </div>
                 ) ) ) 
                : <div style={{ display: 'flex', marginTop: '45px' }} >
