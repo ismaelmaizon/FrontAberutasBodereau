@@ -395,11 +395,10 @@ export default function Dashboard () {
                                                             IdGenerate: el.idg, 
                                                             Tipo: el.Tipo, 
                                                             cantidad: el.cantidad, 
-                                                            subtotal: el.subTotal
+                                                            subtotal: el.subTotal,
+                                                            id_lugar: el.id_lugar
                                                         }
-                                                        
-                                                        let regProdVenta = await registrarProdsVenta(infoProd)
-                                                        console.log(regProdVenta.status);
+                                                        let regProdVenta = await registrarProdsVenta(infoProd)                                                        
                                                         if (regProdVenta.status == 200) {
                                                             let update = {
                                                                 Idg: el.idg, 
@@ -421,7 +420,7 @@ export default function Dashboard () {
                                                     setCart([])
                                                     setVenta({})
                                                     setVprod(false)
-                                                    router('/inicio')
+                                                    router('/inicio') 
                                                     }} >
                                                         finalizar 
                                                     </Button>

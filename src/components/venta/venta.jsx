@@ -10,6 +10,7 @@ import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 import {Button, Card, CardActions, Grid, Typography} from '@mui/material';
 import { Link,  } from "react-router-dom"
 
+
 export default function Venta() {
     const {
         ventainf, ventainfProds
@@ -113,7 +114,7 @@ export default function Venta() {
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.IdGenerate}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.lugar}</Text>
+                                <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.lugName}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>${el.subtotal}</Text>
                             </View>
                             
@@ -237,7 +238,7 @@ export default function Venta() {
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.IdGenerate}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.lugar}</Text>
+                                <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.lugName}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>${el.subtotal}</Text>
                             </View>
                             
@@ -268,10 +269,10 @@ export default function Venta() {
             </Page>
             </Document>
     )}
-
+    
     useEffect(()=>{
-        //console.log(ventainf);
-        //console.log(ventainfProds);
+        console.log(ventainfProds);        
+
     } ,[])
 
     return (
@@ -301,6 +302,7 @@ export default function Venta() {
                                 <Grid item xs={2}><Typography variant="body1" component='h3'>ID</Typography></Grid>
                                 <Grid item xs={2}><Typography variant="body1" component='h3'>Cantidad</Typography></Grid>
                                 <Grid item xs={2}><Typography variant="body1" component='h3'>SubTotal</Typography></Grid>
+                                <Grid item xs={2}><Typography variant="body1" component='h3'>Galpon</Typography></Grid>
                                 
                             </Grid>
                             <Grid container item xs={12} direction='row' gap={2}>
@@ -312,6 +314,11 @@ export default function Venta() {
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>{el.IdGenerate} </Typography></Grid>
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>{el.cantidad}</Typography></Grid>
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>${el.subtotal}</Typography></Grid>
+                                                    <Grid item xs={2}><Typography variant="body1" component='h3'>{el.lugName}</Typography></Grid>
+                                                    <Grid item xs={2}><Button variant="outlined" onClick={ ()=>{ 
+                                                        console.log(el);
+                                                
+                                                    }}>devolver</Button></Grid>
                                         </Grid>
                                 })
                                 }
@@ -321,6 +328,7 @@ export default function Venta() {
                         <Link to='/updateVenta'>
                             <Button size="small" color="info" variant="contained">modificar</Button>
                         </Link>
+                        
                         <Grid>
                             <PDFDownloadLink document={<MyDocument/>} fileName="mypdf.pdf" >
                                 {

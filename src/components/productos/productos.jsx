@@ -97,11 +97,17 @@ export default function Productos() {
         setDescr(event.target.innerText)
     }
     //producto    
+    const [selectedId, setSelectedId] = useState('*****');
     const [prod, setProd] = useState('')
-    const handleChangeProd = (event) => {
-        setProd(event.target.innerText)
-    }
-    const [ids, setids] = useState([])
+
+    const handleSelectionChange = (selection) => {
+        console.log(console.log(selection));
+        
+        // DataGrid's selection model provides an array of selected IDs
+        setSelectedId(selection[0] || null); // Only allow single selection
+        setProd(selection[0] || null)
+    };
+    
     const [descripciones, setDescripciones] = useState([])
     
     const columns = [
@@ -113,7 +119,7 @@ export default function Productos() {
         { field: 'col5', headerName: 'Derc', width: 80 },
         { field: 'col6', headerName: 'Izq', width: 80 },
         { field: 'col7', headerName: 'stock', width: 100 },
-        { field: 'col8', headerName: 'PrecioUnidad', width: 150}
+        { field: 'col8', headerName: 'PrecioUnidad', width: 150},
     ]
     
     //Swich
@@ -140,7 +146,7 @@ export default function Productos() {
                 if (prod.Tipo == ti.id) {
                     console.log(prod);
                     let newProd = {
-                        id: prod.id,
+                        id: prod.IdGenerate,
                         col0: prod.IdGenerate, 
                         col1: ti.Tipo, 
                         col2: ti.Descripcion,
@@ -157,7 +163,7 @@ export default function Productos() {
             ids.push(id)
         })
         setRows(prods)
-        setids(ids)
+        //setids(ids)
         const userView = getLocal('view');
         console.log(userView);
         setview(userView)
@@ -352,21 +358,12 @@ export default function Productos() {
                         </Grid>
                     </div>  
                     }
-                    <Grid sx={{ display: { xs: 'none', md: 'grid', gridTemplateColumns: `repeat(5, 1fr)`, alignItems:'center'},  gap: '5px' }} container>
-                    <Grid item xs={6}>
-                            <FormControl sx={{ marginTop: '25px' , width: '100%',paddingBottom: '25px'}}>
-                            <Autocomplete
-                            disablePortal
-                            id="combo-box-demo"
-                            options={ids}
-                            style={{width: '250px', height: '45px'}}
-                            onChange={handleChangeProd}
-                            renderInput={(params) => <TextField {...params} label="ID´s" />}
-                            />  
-                            </FormControl>
+                    <Grid sx={{ display: { xs: 'none', md: 'grid', gridTemplateColumns: `repeat(5, 1fr)`, alignItems:'center', paddingBottom: '25px'},  gap: '5px' }} container>
+                        <Grid item xs={10}>
+                        <Typography variant='h6' >Producto Seleccionado: {selectedId} </Typography> 
                         </Grid>
                         <Grid item xs={6}>
-                            <Button variant="contained"  sx={{padding: '10px' }} endIcon={<SearchIcon />} onClick={ async ()=>{ 
+                            <Button variant="contained"  sx={{padding: '10px' }} endIcon={<SearchIcon />} disabled={!selectedId} onClick={ async ()=>{ 
                                 setProductoUbi([]) 
                                 setProducto([])
                                 getTipos()
@@ -383,10 +380,10 @@ export default function Productos() {
                                 }} >ver</Button>
                         </Grid>
                     </Grid>
-
                     <DataGrid sx={{height: '700px', fontSize: '16px' }} rows={rows} columns={columns}  
-                        disableRowSelectionOnClick
-                        keepNonExistentRowsSelected
+                        pageSizeOptions={[5, 10]}
+                        checkboxSelection={true}
+                        onRowSelectionModelChange={handleSelectionChange}
                         slots={{
                         toolbar: GridToolbar,
                         }}

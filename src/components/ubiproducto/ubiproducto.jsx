@@ -3,7 +3,7 @@ import { useContext, useEffect} from "react"
 import { MiContexto } from "../context/context"
 
 //lugares
-import {Button, CardContent, Grid} from '@mui/material';
+import {Button, CardContent, Grid, Tooltip} from '@mui/material';
 import { Link } from "react-router-dom";
 //alert
 import Swal from 'sweetalert2'
@@ -101,15 +101,18 @@ export default function Ubiproducto() {
                                         <Grid container item xs={6} paddingRight={2} direction="row" justifyContent='space-evenly' alignContent='flex-end' >
                                             <Grid item xs={8} marginBottom={1} >
                                                 <Link to='/updateproductLug' >
+                                                <Tooltip title="Modificar stock">
                                                     <Button size="small" color="secondary" variant="contained"  onClick={()=>{
                                                         setIdg(producto.IdGenerate)
                                                         sessionStorage.setItem('id', producto.IdGenerate)
                                                         sessionStorage.setItem('lugar', prod.fullname)
                                                         sessionStorage.setItem('id_lugar', prod.id_lugar)
                                                     }} ><AddCircleIcon/></Button>
+                                                </Tooltip>
                                                 </Link>
                                             </Grid>
                                             <Grid item xs={8} marginBottom={1}>
+                                            <Tooltip title="Eliminar de este lugar">
                                                 <Button size="small" color="error" variant="contained" onClick={ async ()=> {
                                                     Swal.fire({
                                                         title: "Esta seguro que quiere borrar el producto de este lugar?",
@@ -127,53 +130,56 @@ export default function Ubiproducto() {
                                                         }
                                                       });
                                                 }} ><DeleteIcon/></Button>
+                                            </Tooltip>
                                             </Grid>
                                             <Grid item xs={8} marginBottom={1}>
+                                            <Tooltip title="Agregar al carrito">
                                                 <Button size="small" color="success" variant="contained" onClick={async ()=>{
-                                                    let value = false
-                                                    cart.map((el)=>{  
-                                                        console.log(el.id);  
-                                                        console.log(producto.IdGenerate);
-                                                        if (el.id == producto.IdGenerate) {
-                                                            console.log('if');
-                                                            value = true
-                                                        }
-                                                    })
-                                                    console.log(value);
-                                                    !value ? Swal.fire({
-                                                        title: "Ingrese cantidad",
-                                                        input: "text",
-                                                        inputAttributes: {
-                                                        autocapitalize: "off"
-                                                        },
-                                                        showCancelButton: true,
-                                                        confirmButtonText: "aceptar",
-                                                        showLoaderOnConfirm: true,
-                                                    }).then( async (result) => {
-                                                        if (result.isConfirmed && result.value <= prod.stock ) {
-                                                            alert('success')
-                                                            const carrito = []
-                                                            cart.map((el)=>{
-                                                                carrito.push(el)
-                                                            })
-                                                            const info = {
-                                                                id : producto.IdGenerate,
-                                                                lugar : prod.fullname,
-                                                                id_lugar : prod.id_lugar,
-                                                                cantidad : result.value
+                                                        let value = false
+                                                        cart.map((el)=>{  
+                                                            console.log(el.id);  
+                                                            console.log(producto.IdGenerate);
+                                                            if (el.id == producto.IdGenerate) {
+                                                                console.log('if');
+                                                                value = true
                                                             }
-                                                            carrito.push(info)                    
-                                                            setCart(carrito) 
-                                                            refresh()  
-                                                            
-                                                        }else{ alert('error') }
-                                                    }) :  
-                                                    Swal.fire({
-                                                        icon: "error",
-                                                        title: "Producto ya existe en el carrito",
-                                                        text: "si quiere cambiar de lugar porfavor primero elimine el producto del carrito y vuelvalo a cargar",
-                                                    });
-                                                }} ><ShoppingCartIcon/></Button>
+                                                        })
+                                                        console.log(value);
+                                                        !value ? Swal.fire({
+                                                            title: "Ingrese cantidad",
+                                                            input: "text",
+                                                            inputAttributes: {
+                                                            autocapitalize: "off"
+                                                            },
+                                                            showCancelButton: true,
+                                                            confirmButtonText: "aceptar",
+                                                            showLoaderOnConfirm: true,
+                                                        }).then( async (result) => {
+                                                            if (result.isConfirmed && result.value <= prod.stock ) {
+                                                                alert('success')
+                                                                const carrito = []
+                                                                cart.map((el)=>{
+                                                                    carrito.push(el)
+                                                                })
+                                                                const info = {
+                                                                    id : producto.IdGenerate,
+                                                                    lugar : prod.fullname,
+                                                                    id_lugar : prod.id_lugar,
+                                                                    cantidad : result.value
+                                                                }
+                                                                carrito.push(info)                    
+                                                                setCart(carrito) 
+                                                                refresh()  
+                                                                
+                                                            }else{ alert('error') }
+                                                        }) :  
+                                                        Swal.fire({
+                                                            icon: "error",
+                                                            title: "Producto ya existe en el carrito",
+                                                            text: "si quiere cambiar de lugar porfavor primero elimine el producto del carrito y vuelvalo a cargar",
+                                                        });
+                                                    }} ><ShoppingCartIcon/></Button>
+                                            </Tooltip>
                                             </Grid>
                                         </Grid>
                                     </Grid>

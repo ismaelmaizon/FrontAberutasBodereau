@@ -1,4 +1,4 @@
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 //import { useDemoData } from '@mui/x-data-grid-generator';
 import { useContext, useEffect, useState } from 'react';
 import { MiContexto } from '../context/context';
@@ -9,6 +9,7 @@ import ReplyIcon from '@mui/icons-material/Reply';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import InfoVentas from '../infoVentas/infoVentas';
+import SwitchVentasProd from '../switch/switchVentasProd';
 
 
 export default function Ventas() {
@@ -31,27 +32,15 @@ export default function Ventas() {
     
     //ventas    
     const [ventid, setVentid] = useState('')
-    const handleChangeProd = (event) => {
-        //console.log(event.target.innerText)
-        setVentid(event.target.innerText)
-    }
+    const [selectedId, setSelectedId] = useState('*****');
 
-    //set email 
-    const handleChangeEmail = (event) => {
-        //console.log(event.target.innerText)
-        setEmail(event.target.innerText)
-    }
-    //set estado 
-    const handleChangeTelefono = (event) => {
-        //console.log(event.target.innerText)
-        setTelV(event.target.innerText)
-    }
-    //set estado 
-    const handleChangeEstado = (event) => {
-        //console.log(event.target.innerText)
-        setEstadoV(event.target.innerText)
-    }
-
+    const handleSelectionChange = (selection) => {
+        console.log(console.log(selection));
+        
+        // DataGrid's selection model provides an array of selected IDs
+        setSelectedId(selection[0] || null); // Only allow single selection
+        setVentid(selection[0] || null)
+    };
 
     //columnas de tabla
     const columns = [
@@ -83,7 +72,7 @@ export default function Ventas() {
                 if (cliente.estado == est.id) {
                     let id = { label: cliente.id_venta }
                     let newCliente = {
-                        id: cliente.id,
+                        id: cliente.id_venta,
                         col0: cliente.id_venta, 
                         col1: cliente.fecha, 
                         col2: cliente.nombre,
@@ -118,7 +107,7 @@ export default function Ventas() {
             <Typography sx={{ width: '200px', margin: 'auto', paddingBottom: '40px', paddingTop: '20px' }} variant='h4' >Ventas</Typography>
             <div style={{height: '900px' , width: '100%', margin: 'auto', display: 'grid', gridTemplateColumns: '80% 20%'  }}>
                 <div style={{ height: 350, width: '100%', margin: 'auto', marginTop: '15px' }}>
-                    <Grid container direction='row' gap={2} >
+                    <Grid container direction='row' gap={6} >
                         <Button variant="contained" color="info" startIcon={<ReplyIcon/>} sx={{width: '150px', height: '25px', padding: '20px' }} onClick={ async ()=>{
                             let res = await getProductos()
                             //console.log(res);
@@ -137,77 +126,41 @@ export default function Ventas() {
                                 setVprod(true)       
                                 setVent(false)    
                             }
-                        }}>productos</Button>
-                        <Button variant="contained" endIcon={<RotateLeftIcon />} sx={{width: '100px', height: '25px', padding: '20px' }} onClick={()=>{refreshVenta()}}>refresh</Button>
+                        }}>Gestor de Prod.</Button>
+
                     </Grid>            
-                    <Grid sx={{ display: {xs: 'none', md: 'grid', gridTemplateColumns: `repeat(4, 1fr)`, alignItems:'center', gap: '15px'}}} container>
-                        <Grid item xs={6} >
-                            <FormControl sx={{ marginTop: '15px', width: '100%'}}>
-                            <Autocomplete
-                            disablePortal
-                            id="combo-box-demo"
-                            options={emails}
-                            sx={{ width: 300 }}
-                            onChange={handleChangeEmail}
-                            renderInput={(params) => <TextField {...params} label="Email's" />}
-                            />  
-                            </FormControl>
+                    <SwitchVentasProd/>
+                    <Grid sx={{ display: {xs: 'none', md: 'grid', gridTemplateColumns: `repeat(5, 1fr)`, alignItems:'center', gap: '15px', marginTop: '25px', marginBottom: '25px'}}} container>
+                        <Grid item>
+                            <Typography variant='h5'  >Venta Seleccionada: </Typography> 
+                            <Typography variant='h6' > {selectedId} </Typography> 
+
                         </Grid>
-                        <Grid item xs={6} >
-                            <FormControl sx={{ marginTop: '15px', width: '100%'}}>
-                            <Autocomplete
-                            disablePortal
-                            id="combo-box-demo"
-                            options={telefonosV}
-                            sx={{ width: 300 }}
-                            onChange={handleChangeTelefono}
-                            renderInput={(params) => <TextField {...params} label="telefonos" />}
-                            />  
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={6} >
-                            <FormControl sx={{ marginTop: '15px', width: '100%'}}>
-                            <Autocomplete
-                            disablePortal
-                            id="combo-box-demo"
-                            options={estadosV}
-                            sx={{ width: 300 }}
-                            onChange={handleChangeEstado}
-                            renderInput={(params) => <TextField {...params} label="Estados" />}
-                            />  
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Button variant="contained"  sx={{padding: '10px' }} endIcon={<SearchIcon />} onClick={ async ()=>{ 
-                                let vent = await filtrarEmail(email, estadoV, telV) 
-                                if (vent.length != 0 ){
-                                    setRowsVent(vent)
-                                }else{
-                                    alert('error')
-                                }
-                                }} >filtrar</Button>
-                        </Grid>
-                        
-                        <Grid item xs={6}>
-                            <FormControl sx={{ marginTop: '15px' , width: '100%', paddingBottom: '25px'}}>
-                            <Autocomplete
-                            disablePortal
-                            id="combo-box-demo"
-                            options={idsvent}
-                            sx={{ width: 300 }}
-                            onChange={handleChangeProd}
-                            renderInput={(params) => <TextField {...params} label="ID's" />}
-                            />  
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Button variant="contained"  sx={{padding: '12px' }} endIcon={<SearchIcon />} onClick={ async ()=>{ 
-                                await getVenta(ventid)
-                                //console.log(res);
-                                }} >ver</Button>
+                        <Grid item container gap={5}>
+                            <Grid>
+                                <Button variant="contained"  sx={{padding: '12px' }} endIcon={<SearchIcon />} disabled={!selectedId} onClick={ async ()=>{ 
+                                    await getVenta(ventid)
+                                    //console.log(res);
+                                    }} >ver</Button>
+                            </Grid>
+                            <Grid item>
+                                <Button variant="contained" endIcon={<RotateLeftIcon />} sx={{width: '100px', height: '25px', padding: '25px' }} onClick={()=>{refreshVenta()}}>refresh</Button>
+                            </Grid>
                         </Grid>
                     </Grid>
-                    <DataGrid sx={{height: '500px'}} rows={rowsVent} columns={columns}  />
+                    
+                    <DataGrid sx={{height: '500px'}} rows={rowsVent} columns={columns} 
+                    pageSizeOptions={[5, 10]}
+                    checkboxSelection={true}
+                    onRowSelectionModelChange={handleSelectionChange}
+                    slots={{
+                    toolbar: GridToolbar,
+                    }}
+                    slotProps={{
+                    toolbar: {
+                        showQuickFilter: true,
+                    },
+                    }} />
                 </div>
                 <div style={{ height: 350, width: '85%', margin: 'auto', marginTop: '200px' ,display: 'grid', gridTemplateRows: 'repeat(4, 1fr)', alignItems: 'center', gap: '250px'}}>
                     <Card sx={{ maxWidth: 300, boxShadow: 6}}>

@@ -843,6 +843,14 @@ const CartProvider = ( { children } ) => {
         const data = await response.json();
         setIdv(data.venta[0].id_venta)
         setVentainf(data.venta[0])
+        data.productos.map((v)=>{
+            lugares.map((el)=>{
+                if (el.id == v.id_lugar) {
+                    v.lugName = el.fullname
+                }
+                
+            })
+        })
         setVentainfProds(data.productos)
         return data
       } catch (error) {
@@ -855,6 +863,7 @@ const CartProvider = ( { children } ) => {
   //añadir producto a Venta
   const registrarProdsVenta = async (data) =>{
     console.log(data);
+    
     try {
       const response = await fetch(`http://${URL}/api/ventas/registrarProdVenta`, {
         method: 'POST',
