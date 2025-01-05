@@ -104,9 +104,9 @@ export default function Ubiproducto() {
                                                 <Tooltip title="Modificar stock">
                                                     <Button size="small" color="secondary" variant="contained"  onClick={()=>{
                                                         setIdg(producto.IdGenerate)
-                                                        sessionStorage.setItem('id', producto.IdGenerate)
-                                                        sessionStorage.setItem('lugar', prod.fullname)
-                                                        sessionStorage.setItem('id_lugar', prod.id_lugar)
+                                                        //sessionStorage.setItem('id', producto.IdGenerate)
+                                                        //sessionStorage.setItem('lugar', prod.fullname)
+                                                        //sessionStorage.setItem('id_lugar', prod.id_lugar)
                                                     }} ><AddCircleIcon/></Button>
                                                 </Tooltip>
                                                 </Link>

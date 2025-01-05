@@ -1080,7 +1080,7 @@ const CartProvider = ( { children } ) => {
           tipos.map((ti)=>{
             if (prod.Tipo == ti.id) {
               let newProd = {
-                  id: prod.id,
+                  id: prod.IdGenerate,
                   col0: prod.IdGenerate, 
                   col1: ti.Tipo, 
                   col2: ti.Descripcion,
@@ -1126,7 +1126,7 @@ const CartProvider = ( { children } ) => {
             if (cliente.estado == est.id) {
                 let id = { label: cliente.id_venta }
                 let newCliente = {
-                    id: cliente.id,
+                    id: cliente.id_venta,
                     col0: cliente.id_venta, 
                     col1: cliente.fecha, 
                     col2: cliente.nombre,
@@ -1233,6 +1233,9 @@ const CartProvider = ( { children } ) => {
     }
 
   }
+
+  //SwichProdVenta
+  const [switchVentasProd, setSwitchVentasProd]  = useState(true)
       
 
   return (
@@ -1275,7 +1278,9 @@ const CartProvider = ( { children } ) => {
         getVentas, ventas, setVentas,
         getVenta ,ventainf, setVentainf, ventainfProds, setVentainfProds, deleteVenta,
         refresh, refreshVenta,
-        alert
+        alert,
+
+        switchVentasProd, setSwitchVentasProd
       }} >
           {children}
       </MiContexto.Provider>

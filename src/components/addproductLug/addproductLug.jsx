@@ -111,7 +111,7 @@ export default function AddProductLug () {
                             let res = await insertProdLug(data)
                             await updateStockProduct(idg)
                             await getProductos()
-                            res ? (alert('success'), router('/inicio') ) : alert('error')
+                            res ? (alert('success'), router('/productos') ) : alert('error')
                             if (res) {
                                 setProductoUbi([]) 
                                 setProducto([])
@@ -124,7 +124,7 @@ export default function AddProductLug () {
                                     setProducto(r), 
                                     t.status != 500 ? setImgs(t) : setImgs([])  
                                 ) : alert('error'),
-                                router('/inicio') 
+                                router('/productos') 
                             }else{
                                 alert('error')
                             }
@@ -133,7 +133,7 @@ export default function AddProductLug () {
                     <Grid item xs={6}  >
                         <Button type="submit" variant="contained" size="small" sx={{ width:'200px'}} onClick={()=>{
                             refresh()
-                            router('/inicio')
+                            router('/productos')
                         }}>volver</Button>
                     </Grid>
                 </Grid>

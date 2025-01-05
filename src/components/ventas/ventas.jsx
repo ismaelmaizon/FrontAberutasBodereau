@@ -10,6 +10,10 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import InfoVentas from '../infoVentas/infoVentas';
 import SwitchVentasProd from '../switch/switchVentasProd';
+import ProductosVenta from '../productosVenta/productosVenta';
+import NavBar from '../navbar/navBar';
+import Venta from '../venta/venta';
+import InfoProdVenta from '../productosVenta/infoProdVenta';
 
 
 export default function Ventas() {
@@ -22,7 +26,8 @@ export default function Ventas() {
         ventas, getProductos, getLugares, getTipos,
         getVenta, emails, setEmails, email, setEmail, estadoV, setEstadoV, estadosV, setEstadosV, telV, setTelV, telefonosV, setTelefonosV,
         refreshVenta, filtrarEmail,
-        alert
+        alert, 
+        switchVentasProd
     } = useContext(MiContexto)
 
     const router = useNavigate()
@@ -32,7 +37,7 @@ export default function Ventas() {
     
     //ventas    
     const [ventid, setVentid] = useState('')
-    const [selectedId, setSelectedId] = useState('*****');
+    const [selectedId, setSelectedId] = useState('');
 
     const handleSelectionChange = (selection) => {
         console.log(console.log(selection));
@@ -56,6 +61,8 @@ export default function Ventas() {
 
 
     useEffect(()=>{
+        console.log(switchVentasProd);
+
         let vents = []
         let ids = []
         let em = []
@@ -93,108 +100,132 @@ export default function Ventas() {
         setEstadosV(newEstados)
         setTelefonosV(telefonosV)
         
-    }, [])
+        
+    }, [switchVentasProd])
 
     return (
-        <div>
-            {
-                info? <div>
-                    <Card sx={{ width: '90%', margin: 'auto', boxShadow: '1px 1px 5px ' }} >
-                        <InfoVentas/>
-                    </Card>
-                </div> : <div></div>
-            }
-            <Typography sx={{ width: '200px', margin: 'auto', paddingBottom: '40px', paddingTop: '20px' }} variant='h4' >Ventas</Typography>
-            <div style={{height: '900px' , width: '100%', margin: 'auto', display: 'grid', gridTemplateColumns: '80% 20%'  }}>
-                <div style={{ height: 350, width: '100%', margin: 'auto', marginTop: '15px' }}>
-                    <Grid container direction='row' gap={6} >
-                        <Button variant="contained" color="info" startIcon={<ReplyIcon/>} sx={{width: '150px', height: '25px', padding: '20px' }} onClick={ async ()=>{
-                            let res = await getProductos()
-                            //console.log(res);
-                            if(res.status == 401){
-                                Swal.fire({
-                                    position: "center",
-                                    icon: "error",
-                                    title: "su session expiro",
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                    });
-                                router('/')
-                            }else{
-                                await getLugares()
-                                await getTipos()
-                                setVprod(true)       
-                                setVent(false)    
-                            }
-                        }}>Gestor de Prod.</Button>
+        <div >
+            <NavBar/>
+            {switchVentasProd ? <div>
+                <div style={{ width: '95%', margin: 'auto' }} >
+                    <div>
+                        <Venta/>
+                    </div>
+                    <div style={{ width: '100%', marginTop: '50px' }}>
+                        {
+                            info? <div>
+                                <Card sx={{ width: '90%', margin: 'auto', boxShadow: '1px 1px 5px ' }} >
+                                    <InfoVentas/>
+                                </Card>
+                            </div> : <div></div>
+                        }
+                        <Typography sx={{ width: '200px', margin: 'auto', paddingBottom: '40px', paddingTop: '20px' }} variant='h4' >Ventas</Typography>
+                        <div style={{height: '900px' , width: '100%', margin: 'auto', display: 'grid', gridTemplateColumns: '80% 20%'  }}>
+                            <div style={{ height: 350, width: '100%', margin: 'auto', marginTop: '15px' }}>
+                                <Grid container direction='row' gap={6} >
+                                    <Button variant="contained" color="info" startIcon={<ReplyIcon/>} sx={{width: '300px', height: '40px', marginBottom: '15px' , paddingRight: '50px' }} onClick={ async ()=>{
+                                        let res = await getProductos()
+                                        //console.log(res);
+                                        if(res.status == 401){
+                                            Swal.fire({
+                                                position: "center",
+                                                icon: "error",
+                                                title: "su session expiro",
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                                });
+                                            router('/')
+                                        }else{
+                                            await getLugares()
+                                            await getTipos()
+                                            setVprod(true)       
+                                            setVent(false)    
+                                            router('/productos')
+                                        }
+                                    }}>Gestor de Productos</Button>
 
-                    </Grid>            
-                    <SwitchVentasProd/>
-                    <Grid sx={{ display: {xs: 'none', md: 'grid', gridTemplateColumns: `repeat(5, 1fr)`, alignItems:'center', gap: '15px', marginTop: '25px', marginBottom: '25px'}}} container>
-                        <Grid item>
-                            <Typography variant='h5'  >Venta Seleccionada: </Typography> 
-                            <Typography variant='h6' > {selectedId} </Typography> 
+                                </Grid>
+                                <SwitchVentasProd/>
+                                
+                                <Grid sx={{ display: {xs: 'none', md: 'grid', gridTemplateColumns: `repeat(5, 1fr)`, alignItems:'center', gap: '15px', marginTop: '25px', marginBottom: '25px'}}} container>
+                                    <Grid item>
+                                        <Typography variant='h5' >Venta Seleccionada: </Typography> 
+                                        <Typography variant='h6' > {selectedId} </Typography> 
 
-                        </Grid>
-                        <Grid item container gap={5}>
-                            <Grid>
-                                <Button variant="contained"  sx={{padding: '12px' }} endIcon={<SearchIcon />} disabled={!selectedId} onClick={ async ()=>{ 
-                                    await getVenta(ventid)
-                                    //console.log(res);
-                                    }} >ver</Button>
-                            </Grid>
-                            <Grid item>
-                                <Button variant="contained" endIcon={<RotateLeftIcon />} sx={{width: '100px', height: '25px', padding: '25px' }} onClick={()=>{refreshVenta()}}>refresh</Button>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    
-                    <DataGrid sx={{height: '500px'}} rows={rowsVent} columns={columns} 
-                    pageSizeOptions={[5, 10]}
-                    checkboxSelection={true}
-                    onRowSelectionModelChange={handleSelectionChange}
-                    slots={{
-                    toolbar: GridToolbar,
-                    }}
-                    slotProps={{
-                    toolbar: {
-                        showQuickFilter: true,
-                    },
-                    }} />
-                </div>
-                <div style={{ height: 350, width: '85%', margin: 'auto', marginTop: '200px' ,display: 'grid', gridTemplateRows: 'repeat(4, 1fr)', alignItems: 'center', gap: '250px'}}>
-                    <Card sx={{ maxWidth: 300, boxShadow: 6}}>
-                        <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                            Ventas
-                            </Typography>
-                            <Typography variant="h4" sx={{ color: 'text.secondary' }}>
-                                {ventas.length}
-                            </Typography>
-                            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                Total de Ventas en la actualidad
-                            </Typography>
-                        </CardContent>
-                        <CardActions>
-                            <div>
-                                {
-                                info? <div>
-                                    <Button size="small" onClick={()=>{
-                                        setInfo(false)
-                                    }}>ocultar mas info</Button>
-
-                                </div> : <div>
-
-                                    <Button size="small" onClick={()=>{
-                                        setInfo(true)
-                                    }} >ver mas info</Button>
-                                </div> }
+                                    </Grid>
+                                    <Grid item container gap={5}>
+                                        <Grid>
+                                            <Button variant="contained"  sx={{padding: '12px' }} endIcon={<SearchIcon />} disabled={!selectedId} onClick={ async ()=>{ 
+                                                await getVenta(ventid)
+                                                //console.log(res);
+                                                }} >ver</Button>
+                                        </Grid>
+                                        <Grid item>
+                                            <Button variant="contained" endIcon={<RotateLeftIcon />} sx={{width: '100px', height: '25px', padding: '25px' }} onClick={()=>{refreshVenta()}}>refresh</Button>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                
+                                <DataGrid sx={{height: '500px'}} rows={rowsVent} columns={columns} 
+                                pageSizeOptions={[5, 10]}
+                                checkboxSelection={true}
+                                onRowSelectionModelChange={handleSelectionChange}
+                                slots={{
+                                toolbar: GridToolbar,
+                                }}
+                                slotProps={{
+                                toolbar: {
+                                    showQuickFilter: true,
+                                },
+                                }} />
                             </div>
-                        </CardActions>
-                    </Card>
-                    
+                            <div style={{ height: 350, width: '85%', margin: 'auto', marginTop: '200px' ,display: 'grid', gridTemplateRows: 'repeat(4, 1fr)', alignItems: 'center', gap: '250px'}}>
+                                <Card sx={{ maxWidth: 300, boxShadow: 6}}>
+                                    <CardContent>
+                                        <Typography gutterBottom variant="h5" component="div">
+                                        Ventas
+                                        </Typography>
+                                        <Typography variant="h4" sx={{ color: 'text.secondary' }}>
+                                            {ventas.length}
+                                        </Typography>
+                                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                                            Total de Ventas en la actualidad
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <div>
+                                            {
+                                            info? <div>
+                                                <Button size="small" onClick={()=>{
+                                                    setInfo(false)
+                                                }}>ocultar mas info</Button>
+
+                                            </div> : <div>
+
+                                                <Button size="small" onClick={()=>{
+                                                    setInfo(true)
+                                                }} >ver mas info</Button>
+                                            </div> }
+                                        </div>
+                                    </CardActions>
+                                </Card>
+                                
+                            </div>
+                        </div>
+                    </div> 
                 </div>
-            </div>
+
+            </div> : 
+            <div>
+                <div style={{ width: '95%', margin: 'auto' }} >
+                    <div>
+                        <InfoProdVenta/>
+                    </div> 
+                    <div style={{ width: '100%', marginTop: '50px' }}>
+                        <ProductosVenta/>
+                    </div>
+                </div>
+            </div> }
         </div>
     );
 }

@@ -12,6 +12,7 @@ import Ventas from "../ventas/ventas";
 import Venta from "../venta/venta";
 import NavBar from "../navbar/navBar";
 import PorductDetail from "../productDetail/productDetail";
+import InfoProdVenta from "../productosVenta/infoProdVenta";
 
 
 export default function Inicio() {
@@ -51,27 +52,7 @@ export default function Inicio() {
 
     return (
         <div>
-            <NavBar/>
-            {
-               vprod || vent ? ( (vprod ? ( <div style={{ width: '95%', margin: 'auto' }}>
-                    <div>
-                        <PorductDetail/>
-                    </div> 
-                    <div style={{ width: '100%', marginTop: '50px' }}>
-                        <Productos/>
-                    </div> 
-               </div> 
-               ) :  (
-                <div style={{ width: '95%', margin: 'auto' }}> 
-                    <div>
-                        <Venta/>
-                    </div>
-                    <div style={{ width: '100%', marginTop: '50px' }}>
-                        <Ventas/>
-                    </div> 
-                </div>
-                ) ) ) 
-               : <div style={{ display: 'flex', marginTop: '45px' }} >
+            <div style={{ display: 'flex', marginTop: '45px' }} >
                    <Button variant="contained" size="large" color="secondary" style={{ height: '400px', width: '400px', margin: 'auto' }} onClick={ async ()=>{ 
                        let res = await getProductos()
                        if(res.status == 401){      
@@ -84,17 +65,19 @@ export default function Inicio() {
                             timer: 1500
                           });
                         router('/')
-                        }else{
-                            await getEstados()
-                            await getLugares()
-                            await getTipos()
-                            setVprod(true) 
+                    }else{
+                        await getEstados()
+                        await getLugares()
+                        await getTipos()
+                        setVprod(true) 
+                        router('/productos')
                         }}
                        }
                         >Productos</Button>
                    <Button variant="contained" size="large" style={{ height: '400px', width: '400px', margin: 'auto', backgroundColor: '#ab47bc' }} onClick={ async ()=>{ 
                        let res = await getVentas()
-                       if(res.status == 401){
+                       let res2 = await getProductos()
+                       if(res.status == 401 || res2.status == 401){
                             console.log(res.status);
                             Swal.fire({
                                 position: "center",
@@ -108,11 +91,12 @@ export default function Inicio() {
                             await getEstados()
                             await getLugares()
                             await getTipos()
-                            setVent(true) 
+                            setVent(true)
+                            router('/ventas') 
                         }
                        }} >Ventas</Button>
                </div>
-            }
-            </div>
+    
+    </div>
     ) 
 }

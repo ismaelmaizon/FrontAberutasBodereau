@@ -7,27 +7,29 @@ import { MiContexto } from "../context/context";
 
 export default function SwitchVentasProd () {
 
-    const {getProductos,  getVentas, getLugares, getEstados, getTipos, 
+    const {
+        switchVentasProd, setSwitchVentasProd,
+        getProductos,  getVentas, getLugares, getEstados, getTipos, 
         setVprod, setVent
     } = useContext(MiContexto)
     
-    const [checked, setChecked] = useState(true);
-
     const handleChange = async (event) => {
-    setChecked(event.target.checked);
-    console.log(checked);
-    checked ? ( 
+        console.log(switchVentasProd);
+        
+    setSwitchVentasProd(event.target.checked);
+    console.log(switchVentasProd);
+    switchVentasProd ? ( 
         await getProductos(), await getEstados(),
         await getLugares(),
-        await getTipos(),
-        setVprod(true) ) 
+        await getTipos()
+        ) 
         :
         (
             await getVentas(),
             await getEstados(),
             await getLugares(),
-            await getTipos(),
-            setVent(true) 
+            await getTipos()
+            
         )
     
     };
@@ -35,23 +37,23 @@ export default function SwitchVentasProd () {
 
     return(
         <div>
-            <Grid container direction='row' >
-                <Grid xs={1} >
-                    <Typography>prod <ArrowBackIcon/></Typography>
-                   
+            <Grid container direction='row' alignItems={'center'}  >
+                <Grid item xs={1} >
+                    <Typography variant="h5" >Productos</Typography>
+                </Grid>    
+                <Grid item xs={1}>
+                    <div style={{ paddingLeft: '25px' }} >
+                        <Switch
+                            size="medium"
+                            checked={switchVentasProd}
+                            onChange={handleChange}
+                            inputProps={{ 'aria-label': 'controlled' }}
+                            />             
+                    </div>
                 </Grid>    
                 
-                <Grid xs={1} >
-                    <Switch
-                        size="medium"
-                        checked={checked}
-                        onChange={handleChange}
-                        inputProps={{ 'aria-label': 'controlled' }}
-                        />        
-                </Grid>    
-                
-                <Grid xs={1}>
-                    <Typography><ArrowForwardIcon/> Vent</Typography>
+                <Grid item xs={8}>
+                    <Typography variant="h5" > Ventas</Typography>
                 </Grid>    
                     
             </Grid>

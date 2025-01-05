@@ -16,6 +16,8 @@ import AddTipo from './components/addtipo/addtipo.jsx'
 import AddLugar from './components/addlugar/addlugar.jsx'
 import UpdateVenta from './components/updateVentas/updateVenta.jsx'
 import UpDateProduct from './components/updateProduct/updateProduct.jsx'
+import Productos from './components/productos/productos.jsx'
+import Ventas from './components/ventas/ventas.jsx'
 
 
 function App() {
@@ -28,6 +30,8 @@ function App() {
               <Routes>
                 <Route element={<SignInSide/>} path='/' ></Route>
                 <Route element={<Inicio/>} path='/inicio' ></Route>
+                <Route element={<Productos/>} path='/productos' ></Route>
+                <Route element={<Ventas/>} path='/ventas' ></Route>
                 <Route element={<AddProducto/>} path='/addproducto' ></Route>
                 <Route element={<AddTipo/>} path='/addtipo' ></Route>
                 <Route element={<AddLugar/>} path='/addlugar' ></Route>

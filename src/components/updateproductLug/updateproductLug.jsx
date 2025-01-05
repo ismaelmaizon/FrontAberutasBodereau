@@ -119,7 +119,7 @@ export default function UpdateProductLug () {
                                         setProducto(r), 
                                         t.status != 500 ? setImgs(t) : setImgs([])  
                                     ) : alert('error'),
-                                    router('/inicio') 
+                                    router('/productos') 
                                 }else{
                                     alert('error')
                                 }
