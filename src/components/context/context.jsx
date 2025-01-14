@@ -665,7 +665,7 @@ const CartProvider = ( { children } ) => {
         tipos.map((ti)=>{
           if (prod.Tipo == ti.id) {
             prods.push({
-                id: prod.id,
+                id: prod.IdGenerate,
                 col0: prod.IdGenerate,
                 col1: ti.Tipo,
                 col2: ti.Descripcion,
