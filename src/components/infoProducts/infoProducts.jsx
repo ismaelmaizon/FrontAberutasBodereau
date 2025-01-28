@@ -22,7 +22,6 @@ const MenuProps = {
   },
 };
 export default function InfoProducts() {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const {lugares, tipos, productos} = useContext(MiContexto)
 
     //const router = useNavigate()

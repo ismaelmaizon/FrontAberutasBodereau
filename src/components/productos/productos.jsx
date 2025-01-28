@@ -2,48 +2,78 @@ import { DataGrid, GridToolbar  } from '@mui/x-data-grid';
 //import { useDemoData } from '@mui/x-data-grid-generator';
 import { useContext, useEffect, useState } from 'react';
 import { MiContexto } from '../context/context';
-import { Autocomplete, Button, Card, CardActions, CardContent, FormControl, Grid, InputLabel, MenuItem, Select, Switch, TextField, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, Grid, Typography } from '@mui/material';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import SearchIcon from '@mui/icons-material/Search';
 import ReplyIcon from '@mui/icons-material/Reply';
-import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import InfoProducts from '../infoProducts/infoProducts';
 import NavBar from '../navbar/navBar';
 import PorductDetail from '../productDetail/productDetail';
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+
 const URL = import.meta.env.VITE_BACKEND_URL
 
 
 export default function Productos() {
 
-    const {
+    const { 
+        getEstados,
         getLocal, setview, view, 
         getTipos, tipos,
-        setVprod, setVent,
         lugares, getLugares,
-        producto, productos, setProductoUbi,
-        getProducto, setProducto, getProductoIms, getVentas, setImgs,
-        filtrarTipoLadoLug, rows, setRows,
+        producto, productos, setProductos, setProductoUbi,
+        getProducto, setProducto, getProductoIms, setImgs,
+        rows, setRows,
         refresh,
-        lug, setLug, lado, setLado, tipo, setTipo, descr, setDescr,
         alert
     } = useContext(MiContexto)
 
     const router = useNavigate()
 
+    const [isLoading, setIsLoading] = useState(true);
+
+    const getProductos = async () =>{
+        getEstados()
+        getLugares()
+        getTipos()
+
+        try {
+            const response = await fetch(`http://${URL}/api/productos/productos`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              credentials: 'include'
+            });
+  
+             // Manejo de respuestas no autorizadas
+            if (response.status === 401) {
+              console.error('Error 401: No autorizado. Verifica tus credenciales o sesión.');
+              // Aquí puedes redirigir al usuario a la página de login o mostrar un mensaje de error
+              return { status: 401, message: 'No autorizado' };
+            }
+            if (!response.ok) {
+              throw new Error('problemas al consultar en la navegacion');
+            }
+            const data = await response.json();
+            setProductos(data.response)
+            return response
+          } catch (error) {
+            let response = { status: 500 }
+            console.error('problemas al obtener productos:', error);
+            router('/')
+            return response        
+          }
+            finally {
+            setIsLoading(false); // Terminamos el estado de carga
+          }
+    }
+
+
     const [sold, setSold] = useState(null)
     const [frecuencia, setFrecuencia] = useState(null)
+
     const getProductMostSold = async () => {
         try {
             const response = await fetch(`http://${URL}/api/productos/productoMostSold`,{
@@ -66,38 +96,15 @@ export default function Productos() {
             console.log(data.response);
             setSold(data.response[0].id_producto)       
             setFrecuencia(data.response[0].frecuencia)      
-          } catch (error) {
+        } catch (error) {
             let response = { status: 500 }
             console.error('problemas al obtener estados:', error);
             return response          
-          }
+        }
     }
-
     //info ventas
     const [info, setInfo] = useState(false)
     
-    //set lugares
-    const handleChangeLug = (event) => {
-        //console.log(event.target.value)
-        setLug(event.target.value)
-    }
-    
-    //set lado
-    const lados = ['Izq','Derc']    
-    const handleChangeLado = (event) => {
-        //console.log(event.target.value)
-        setLado(event.target.value)
-    }
-    //set tipos 
-    const handleChange = (event) => {
-        setTipo(event.target.value)
-    }
-    //producto    
-    //set descripciones
-    const handleChangeDescr = (event) => {
-        console.log(event.target.innerText)
-        setDescr(event.target.innerText)
-    }
     //producto    
     const [selectedId, setSelectedId] = useState('');
     const [prod, setProd] = useState('')
@@ -109,9 +116,7 @@ export default function Productos() {
         setSelectedId(selection[0] || null); // Only allow single selection
         setProd(selection[0] || null)
     };
-    
-    const [descripciones, setDescripciones] = useState([])
-    
+        
     const columns = [
         { field: 'col0', headerName: 'ID', width: 200},
         { field: 'col1', headerName: 'Tipo', width: 100 },
@@ -124,16 +129,11 @@ export default function Productos() {
         { field: 'col8', headerName: 'PrecioUnidad', width: 150},
     ]
     
-    //Swich
-    const [checked, setChecked] = useState(false);
-    const handleChangeSwitch = (event) => {
-        console.log(event.target.checked)
-        setChecked(event.target.checked);
-    }
-    const label = { inputProps: { 'aria-label': 'Switch demo' } };
     
-    
-    useEffect(()=>{        
+    useEffect(()=>{       
+        
+        getProductos()
+        
         let prods = []
         let ids = []
         let descripcions = []
@@ -141,12 +141,12 @@ export default function Productos() {
             let descripcion = { label: ti.Descripcion }
             descripcions.push(descripcion)
         })
-        setDescripciones(descripcions)
         productos.map((prod)=>{ 
+            console.log(prod);
             let id = { label: prod.IdGenerate }
             tipos.map((ti)=>{
                 if (prod.Tipo == ti.id) {
-                    console.log(prod);
+                    //console.log(prod);
                     let newProd = {
                         id: prod.IdGenerate,
                         col0: prod.IdGenerate, 
@@ -165,14 +165,14 @@ export default function Productos() {
             ids.push(id)
         })
         setRows(prods)
-        //setids(ids)
         const userView = getLocal('view');
         console.log(userView);
         setview(userView)
         console.log(view);
         console.log(tipos);
         getProductMostSold()
-    }, [sold])
+        
+    }, [isLoading])
 
     return (
         <div>
@@ -194,177 +194,11 @@ export default function Productos() {
                         <div style={{ height: 350, width: '100%', margin: 'auto', marginTop: '15px' }}>
                             <Grid container direction='row' gap={2} >
                                 <Button variant="contained" color="info" startIcon={<ReplyIcon/>} sx={{width: '100px', height: '25px', padding: '20px' }} onClick={ async ()=>{
-                                    let res = await getVentas()
-                                    if(res.status == 401){
-                                        Swal.fire({
-                                            position: "center",
-                                            icon: "error",
-                                            title: "su session expiro",
-                                            showConfirmButton: false,
-                                            timer: 1500
-                                        });
-                                        router('/')
-                                    }else{
-                                        await getLugares()
-                                        await getTipos()
-                                        setVent(true)    
-                                        setVprod(false)       
-                                        router('/ventas')
-                                    }
+                                         
+                                    router('/ventas')
+                                    
                                 }}>ventas</Button>
                             </Grid>
-                            { checked ?
-                            <div>
-                            <Grid sx={{ display: { xs: 'none', md: 'grid', gridTemplateColumns: `repeat(4, 1fr)`, alignItems:'center'},  }} container>
-                                <Grid item xs={10} >
-                                    <FormControl sx={{ marginTop: '10px' , width: '100%', paddingBottom: '10px'}}>
-                                                <InputLabel id="demo-select-small-label" sx={{ fontSize: '15px' }} variant='outlined' size='small' >Tipo</InputLabel>
-                                                <Select
-                                                labelId="demo-select-small-label"
-                                                id="demo-select-small"
-                                                value={tipo}
-                                                onChange={handleChange}
-                                                MenuProps={MenuProps}
-                                                style={{width: '250px', height: '45px'}}
-                                                >
-                                                {tipos.map((name, index) => (
-                                                    <MenuItem
-                                                    key={index}
-                                                    value={name.id}
-                                                    >
-                                                    {name.Tipo}
-                                                    </MenuItem>
-                                                ))}
-                                                </Select>    
-                                    </FormControl>
-                                </Grid>
-                                <Grid item xs={10} >
-                                    <FormControl sx={{ marginTop: '25px' , width: '100%',paddingBottom: '25px'}}>
-                                    <Autocomplete
-                                    disablePortal
-                                    id="combo-box-demo"
-                                    options={descripciones}
-                                    style={{width: '400px', height: '45px'}}
-                                    onChange={handleChangeDescr}
-                                    renderInput={(params) => <TextField {...params} label="Descripcion" />}
-                                    />  
-                                    </FormControl>
-                                                                
-                                </Grid>
-                                <Typography sx={{margin: 'auto' }} variant='h6' >más filtros <Switch {...label} size='medium' checked onChange={handleChangeSwitch}/> </Typography>
-                                <Grid item xs={10}>
-                                    <Button variant="contained"  sx={{padding: '10px' }} endIcon={<SearchIcon />} onClick={ async ()=>{
-                                        console.log(descr);
-                                        
-                                        let prods = await filtrarTipoLadoLug(tipo, lado, lug, descr) 
-                                        if (prods.length != 0 ){
-                                            setRows(prods)
-                                        }else{
-                                            alert('error')
-                                        }
-                                        }}  >filtrar</Button>
-                                </Grid>
-                                <Grid item xs={10}>
-                                    <FormControl sx={{ marginTop: '10px' , width: '100%', paddingBottom: '10px'}}>
-                                                <InputLabel id="demo-select-small-label" sx={{ fontSize: '15px' }} variant='outlined' size='small' >Lado</InputLabel>
-                                                <Select
-                                                labelId="demo-select-small-label"
-                                                id="demo-select-small"
-                                                value={lado}
-                                                onChange={handleChangeLado}
-                                                MenuProps={MenuProps}
-                                                style={{width: '250px', height: '45px'}}
-                                                >
-                                                {lados.map((name, index) => (
-                                                    <MenuItem
-                                                    key={index}
-                                                    value={name}
-                                                    >
-                                                    {name}
-                                                    </MenuItem>
-                                                ))}
-                                                </Select>    
-                                    </FormControl>
-                                </Grid>    
-                                <Grid item xs={10}>
-                                    <FormControl sx={{ marginTop: '10px' , width: '100%', paddingBottom: '10px'}}>
-                                                <InputLabel id="demo-select-small-label" sx={{ fontSize: '15px' }} variant='outlined' size='small'>Lugar</InputLabel>
-                                                <Select
-                                                labelId="demo-select-small-label"
-                                                id="demo-select-small"
-                                                value={lug}
-                                                onChange={handleChangeLug}
-                                                MenuProps={MenuProps}
-                                                style={{width: '250px', height: '45px'}}
-                                                >
-                                                {lugares.map((name, index) => (
-                                                    <MenuItem
-                                                    key={index}
-                                                    value={name.id}
-                                                    >
-                                                    {name.fullname}
-                                                    </MenuItem>
-                                                ))}
-                                                </Select>    
-                                    </FormControl>
-                                </Grid>
-                            </Grid>
-                            </div>  
-                            : 
-                            <div>
-                                <Grid sx={{ display: { xs: 'none', md: 'grid', gridTemplateColumns: `repeat(5, 1fr)`, alignItems:'center', gap: '15px'}}} container>
-                                    <Grid item xs={4} >
-                                        <FormControl sx={{ marginTop: '10px' , width: '100%', paddingBottom: '10px'}}>
-                                                    <InputLabel id="demo-select-small-label" sx={{ fontSize: '15px' }} variant='outlined' size='small' >Tipo</InputLabel>
-                                                    <Select
-                                                    labelId="demo-select-small-label"
-                                                    id="demo-select-small"
-                                                    value={tipo}
-                                                    onChange={handleChange}
-                                                    MenuProps={MenuProps}
-                                                    style={{width: '400px', height: '45px'}}
-                                                    >
-                                                    {tipos.map((name, index) => (
-                                                        <MenuItem
-                                                        key={index}
-                                                        value={name.id}
-                                                        >
-                                                        {name.Tipo}
-                                                        </MenuItem>
-                                                    ))}
-                                                    </Select>    
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={4} >
-                                        <FormControl sx={{ marginTop: '25px' , width: '100%',paddingBottom: '25px'}}>
-                                        <Autocomplete
-                                        disablePortal
-                                        id="combo-box-demo"
-                                        options={descripciones}
-                                        style={{width: '600px', height: '45px'}}
-                                        onChange={handleChangeDescr}
-                                        renderInput={(params) => <TextField {...params} label="Descripcion" />}
-                                        />  
-                                        </FormControl>
-                                                                    
-                                    </Grid>
-                                    <Typography sx={{margin: 'auto' }} variant='h6' >más filtros <Switch {...label} size='medium' onChange={handleChangeSwitch}/> </Typography>
-
-                                    <Grid item xs={4}>
-                                        <Button variant="contained"  sx={{padding: '10px' }} endIcon={<SearchIcon />} onClick={ async ()=>{
-                                            console.log(descr);
-                                            
-                                            let prods = await filtrarTipoLadoLug(tipo, lado, lug, descr) 
-                                            if (prods.length != 0 ){
-                                                setRows(prods)
-                                            }else{
-                                                alert('error')
-                                            }
-                                            }}  >filtrar</Button>
-                                    </Grid>
-                                </Grid>
-                            </div>  
-                            }
                             <Grid sx={{ display: { xs: 'none', md: 'grid', gridTemplateColumns: `repeat(5, 1fr)`, alignItems:'center', paddingBottom: '25px'},  gap: '5px' }} container>
                                 <Grid item >
                                     <Typography variant='h5' >Prod. Seleccionado: </Typography> 
@@ -389,22 +223,35 @@ export default function Productos() {
                                             }} >ver</Button>
                                     </Grid>
                                     <Grid item>
-                                        <Button variant="contained"  sx={{width: '100px', height: '25px', padding: '20px' }} endIcon={<RotateLeftIcon />} onClick={()=>{refresh()}}>refresh</Button>
+                                        <Button variant="contained"  sx={{width: '100px', height: '25px', padding: '20px' }} endIcon={<RotateLeftIcon />} onClick={()=>{
+                                        setSelectedId('') 
+                                        setProd('')
+                                        refresh()
+                                        
+                                        }}>refresh</Button>
                                     </Grid>
                                 </Grid>
                             </Grid>
+                            {isLoading ?
+                            <p>Cargando productos...</p>
+                            
+                            :
+                            
                             <DataGrid sx={{height: '700px', fontSize: '16px' }} rows={rows} columns={columns}  
-                                pageSizeOptions={[5, 10]}
-                                checkboxSelection={true}
-                                onRowSelectionModelChange={handleSelectionChange}
-                                slots={{
-                                toolbar: GridToolbar,
-                                }}
-                                slotProps={{
-                                toolbar: {
-                                    showQuickFilter: true,
-                                },
-                                }} />
+                            pageSizeOptions={[5, 10]}
+                            checkboxSelection={true}
+                            disableMultipleRowSelection={true}
+                            onRowSelectionModelChange={handleSelectionChange}
+                            slots={{
+                            toolbar: GridToolbar,
+                            }}
+                            slotProps={{
+                            toolbar: {
+                                showQuickFilter: true,
+                            },
+                            }} />
+
+                            }
                         </div>
                         <div style={{ height: 350, width: '85%', margin: 'auto',display: 'grid', gridTemplateRows: 'repeat(4, 1fr)', alignItems: 'center', gap: '250px'}}>
                             <Card sx={{ maxWidth: 300, boxShadow: 6}}>

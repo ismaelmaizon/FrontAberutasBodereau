@@ -1,7 +1,5 @@
 import { Grid, Switch, Typography } from "@mui/material";
-import { useContext, useState } from "react";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { useContext } from "react";
 import { MiContexto } from "../context/context";
 
 
@@ -9,28 +7,27 @@ export default function SwitchVentasProd () {
 
     const {
         switchVentasProd, setSwitchVentasProd,
-        getProductos,  getVentas, getLugares, getEstados, getTipos, 
-        setVprod, setVent
+        getLugares, getEstados, getTipos
     } = useContext(MiContexto)
     
     const handleChange = async (event) => {
+    
         console.log(switchVentasProd);
         
-    setSwitchVentasProd(event.target.checked);
-    console.log(switchVentasProd);
-    switchVentasProd ? ( 
-        await getProductos(), await getEstados(),
-        await getLugares(),
-        await getTipos()
-        ) 
-        :
-        (
-            await getVentas(),
+        setSwitchVentasProd(event.target.checked);
+        console.log(switchVentasProd);
+        switchVentasProd ? ( 
             await getEstados(),
             await getLugares(),
             await getTipos()
-            
-        )
+            ) 
+            :
+            (
+            await getEstados(),
+            await getLugares(),
+            await getTipos()
+                
+            )
     
     };
 

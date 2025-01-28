@@ -9,10 +9,11 @@ import NavBar from "../navbar/navBar";
 
 export default function UpDateProduct () {
 
-    const {tipos, producto, actualizarProducto, alert,
+    const {
+        tipos, producto, actualizarProducto, alert,
         setProductoUbi,
         setProducto,
-        setImgs, getProducto, getProductoIms, getProductos
+        setImgs, getProducto, getProductoIms,
     } = useContext(MiContexto)
 
     const router = useNavigate()
@@ -83,8 +84,9 @@ export default function UpDateProduct () {
                 <NavBar/>
                 <Box sx={{ width: '60%', margin: 'auto', marginTop: '120px', padding: '15px', boxShadow: '2px 2px 10px 2px' }}  >
                     <Typography variant="h5" gutterBottom sx={{ width:'450px', margin: 'auto' }} >
-                        Modificando a {producto.IdGenerate}
+                        Modificando a ID:  {producto.IdGenerate}
                     </Typography>
+                    
                     <Box component='form' onSubmit={handleSubmit} encType="multipart/form-data" display={'flex'} flexDirection={'column'} >            
                     <Grid container direction='row' marginBottom="40px" marginTop="10px">
                         <Grid item xs={10} container direction='row' spacing={3} sx={{ margin:'auto' }} >
@@ -167,7 +169,6 @@ export default function UpDateProduct () {
                                     if (respon.status == 200) {
                                             let r = await getProducto(producto.IdGenerate)
                                             let t = await getProductoIms(producto.IdGenerate)
-                                            await getProductos()
                                             r ? ( 
                                                 setProducto(r), 
                                                 t.status != 500 ? setImgs(t) : setImgs([])  

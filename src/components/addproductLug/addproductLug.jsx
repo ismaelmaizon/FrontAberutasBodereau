@@ -11,7 +11,6 @@ export default function AddProductLug () {
 
     const {
         productoUbi,
-        getProductos,
         updateStockProduct,
         lugares, idg, refresh,
         insertProdLug, alert,
@@ -110,7 +109,6 @@ export default function AddProductLug () {
                             console.log(data);
                             let res = await insertProdLug(data)
                             await updateStockProduct(idg)
-                            await getProductos()
                             res ? (alert('success'), router('/productos') ) : alert('error')
                             if (res) {
                                 setProductoUbi([]) 
@@ -119,7 +117,6 @@ export default function AddProductLug () {
                                 setImgs([]) 
                                 let r = await getProducto(idg)
                                 let t = await getProductoIms(idg)
-                                await getProductos()
                                 r ? ( 
                                     setProducto(r), 
                                     t.status != 500 ? setImgs(t) : setImgs([])  

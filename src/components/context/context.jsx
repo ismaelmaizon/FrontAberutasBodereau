@@ -13,9 +13,13 @@ const URL = import.meta.env.VITE_BACKEND_URL
 
  
 const CartProvider = ( { children } ) => {
-  //vista
-  const [vprod, setVprod] = useState(false)
-  const [vent, setVent] = useState(false)
+
+  const [descuentos, setDecuentos] = useState([
+    {id: 0, porcentaje: 15},
+    {id: 1, porcentaje: 20},
+    {id: 3, porcentaje: 50}
+  ])
+  
   
   //get cookie
   const [view, setview] = useState('')
@@ -179,36 +183,7 @@ const CartProvider = ( { children } ) => {
 
   //obtener productos
   const [productos, setProductos] = useState([])
-  const getProductos = async () =>{
-      try {
-          const response = await fetch(`http://${URL}/api/productos/productos`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            credentials: 'include'
-          });
-
-           // Manejo de respuestas no autorizadas
-          if (response.status === 401) {
-            console.error('Error 401: No autorizado. Verifica tus credenciales o sesión.');
-            // Aquí puedes redirigir al usuario a la página de login o mostrar un mensaje de error
-            return { status: 401, message: 'No autorizado' };
-          }
-          if (!response.ok) {
-            throw new Error('problemas al consultar en la navegacion');
-          }
-          const data = await response.json();
-          setProductos(data.response)
-              
-          return response
-        } catch (error) {
-          let response = { status: 500 }
-          console.error('problemas al obtener productos:', error);
-          return response        
-        }
-      
-  }
+  
   //obtener producto
   const [idg, setIdg] = useState('')
   const [producto, setProducto] = useState([])
@@ -375,7 +350,6 @@ const CartProvider = ( { children } ) => {
       const data = await response.json();
       console.log(data);
       
-      setVprod(false)
       return {response, data}
     } catch (error) {
       let response = { status: 500 }
@@ -507,7 +481,6 @@ const CartProvider = ( { children } ) => {
         throw new Error('Network response was not ok');
       }
       console.log(response);
-      setVprod(false)
       return response
     } catch (error) {
       let response = { status: 500 }
@@ -639,120 +612,10 @@ const CartProvider = ( { children } ) => {
     }
   }
 
-  // Filtro productos
+  
   // rows (filas de la tabla) 
   const [rows, setRows] = useState([])
-  const filtrarTipoLadoLug = async (tipo, lado, lug, descr) => {
-    
-    if (descr != '' ) {
-      console.log(descr);
-      tipos.map((ti)=>{
-        console.log(ti.Descripcion);
-        console.log(descr);
-        if(ti.Descripcion === descr){
-          tipo = ti.id
-          console.log(tipo);
-          
-        }
-      })
-      console.log(tipo);
-    }
 
-    setRows([]);
-    let prods = [];
-    
-    const addProduct = (prod) => {      
-        tipos.map((ti)=>{
-          if (prod.Tipo == ti.id) {
-            prods.push({
-                id: prod.id,
-                col0: prod.IdGenerate,
-                col1: ti.Tipo,
-                col2: ti.Descripcion,
-                col3: prod.Ancho,
-                col4: prod.Alto,
-                col5: prod.Derc,
-                col6: prod.Izq,
-                col7: prod.stock,
-                col8: prod.Precio_U
-            });  
-        } 
-      })
-    };
-
-    const filterByLugar = async (lug) => {
-        const response = await getProductosLugar(lug);
-        response.forEach(prodlug => {
-            productos.forEach(prod => {
-                if (prodlug.id_producto === prod.id) addProduct(prod);
-            });
-        });
-    };
-
-    const filterByTipo = () => {
-        productos.forEach(prod => {
-            if (tipo === prod.Tipo) addProduct(prod);
-        });
-    };
-
-    const filterByLado = () => {
-        productos.forEach(prod => {
-            if ((lado === 'Derc' && prod.Derc === 1) || (lado === 'Izq' && prod.Izq === 1)) addProduct(prod);
-        });
-    };
-
-    const filterByTipoYLado = () => {
-        productos.forEach(prod => {
-            if ((lado === 'Derc' && prod.Derc === 1 && tipo === prod.Tipo) || (lado === 'Izq' && prod.Izq === 1 && tipo === prod.Tipo)) addProduct(prod);
-        });
-    };
-
-    const filterByLugarYTipo = async (lug) => {
-        const response = await getProductosLugar(lug);
-        setProductsLug(response);
-        productsLug.forEach(prodlug => {
-            productos.forEach(prod => {
-                if (prodlug.id_producto === prod.id && tipo === prod.Tipo) addProduct(prod);
-            });
-        });
-    };
-
-    const filterByLugarYLado = async (lug) => {
-        const response = await getProductosLugar(lug);
-        setProductsLug(response);
-        productsLug.forEach(prodlug => {
-            productos.forEach(prod => {
-                if (prodlug.id_producto === prod.id && ((lado === 'Derc' && prod.Derc === 1) || (lado === 'Izq' && prod.Izq === 1))) addProduct(prod);
-            });
-        });
-    };
-
-    
-      
-    if (lug && !tipo && !lado) {
-      await filterByLugar(lug);
-    } else if (tipo && !lado && !lug) {
-        filterByTipo();
-    } else if (lado && !tipo && !lug) {
-        filterByLado();
-    } else if (lug && tipo && !lado) {
-        await filterByLugarYTipo(lug);
-    } else if (lug && lado && !tipo) {
-        await filterByLugarYLado(lug);
-    } else if (tipo && lado && !lug) {
-        filterByTipoYLado();
-    } else if (tipo && lado && lug) {
-        const response = await getProductosLugar(lug);
-        setProductsLug(response);
-        productsLug.forEach(prodlug => {
-            productos.forEach(prod => {
-                if (prodlug.id_producto === prod.id && ((lado === 'Derc' && prod.Derc === 1) || (lado === 'Izq' && prod.Izq === 1)) && tipo == prod.Tipo ) addProduct(prod);
-            });
-        });
-    }
-
-    return prods  
-  };
   
   const [cart, setCart] = useState([])
   //Registrar Venta
@@ -789,35 +652,7 @@ const CartProvider = ( { children } ) => {
   }
   //obtener ventas
   const [ventas, setVentas] = useState([])
-  const getVentas = async () =>{
-    try {
-        const response = await fetch(`http://${URL}/api/ventas/getVentas`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          credentials: 'include'
-        })
-         // Manejo de respuestas no autorizadas
-        if (response.status === 401) {
-          console.error('Error 401: No autorizado. Verifica tus credenciales o sesión.');
-          // Aquí puedes redirigir al usuario a la página de login o mostrar un mensaje de error
-          return { status: 401, message: 'No autorizado' };
-        }
-
-        if (!response.ok) {
-          throw new Error('Problemas al consultar en la navegación');
-        }
-
-        const data = await response.json();
-        setVentas(data.response);  // Asignar los datos a tu estado
-        return data;
-      } catch (error) {
-        let response = { status: 500 }
-        console.error('problemas con la consulta:', error);
-        return response
-      }
-  }
+  
   //obtener venta
   const [idv, setIdv] = useState('')
   const [ventainf, setVentainf] = useState([])
@@ -849,6 +684,11 @@ const CartProvider = ( { children } ) => {
                     v.lugName = el.fullname
                 }
                 
+            })
+            tipos.map((el)=>{
+              if (el.Tipo == v.Tipo) {
+                v.Descripcion = el.Descripcion
+              }
             })
         })
         setVentainfProds(data.productos)
@@ -1099,18 +939,10 @@ const CartProvider = ( { children } ) => {
 
   const [idsvent, setidsVent] = useState([])
 
-  const [email, setEmail] = useState('')
-  const [emails, setEmails] = useState([])
-  const [estadoV, setEstadoV] = useState('')
-  const [estadosV, setEstadosV] = useState([])
-  const [telV, setTelV] = useState('')
-  const [telefonosV, setTelefonosV] = useState([])
+
 
   const refreshVenta = async () =>{
     setVentainf([])
-    setEmail('')
-    setEstadoV('')
-    setTelV('')
     let vents = []
     let ids = []
     let em = []
@@ -1143,9 +975,6 @@ const CartProvider = ( { children } ) => {
     })
     setRowsVent(vents)
     setidsVent(ids)
-    setEmails(em)
-    setEstadosV(estadosV)
-    setTelefonosV(telefonosV)
   }
 
   //Alertas
@@ -1241,24 +1070,24 @@ const CartProvider = ( { children } ) => {
   return (
       // aca llamamos al hoock useMiContexto
       <MiContexto.Provider value={{
+        descuentos, setDecuentos,
+
         getLocal, view, setview,
 
         getEstados, estados, setEstados,
 
         createTipo,
         getTipos, tipos,
-
-        vprod, setVprod, vent, setVent,
         
         createProducto, actualizarProducto, deleteProducto, addimgProduct, deleteProductoImg,
-        productos, setProductos, getProductos,
+        productos, setProductos,
         producto, setProducto, getProducto, idg, setIdg,
         getProductoIms, imgs, setImgs,
         productoUbi, setProductoUbi, getUbiProducto, infoprod, setInfoprod,
         updateStockProduct, 
         getProductosLugar, productsLug, setProductsLug, deleteProductoLugar,
 
-        filtrarTipoLadoLug, rows, setRows,
+        rows, setRows,
         
         createLugar,
         getLugares, lugares, setLugares,
@@ -1271,11 +1100,10 @@ const CartProvider = ( { children } ) => {
         cart, setCart, 
         idv, setIdv,
         rowsVent, setRowsVent,
-        emails, setEmails, email, setEmail, estadoV, setEstadoV, estadosV, setEstadosV, telV, setTelV, telefonosV, setTelefonosV,
         filtrarEmail,
         idsvent, setidsVent,
         
-        getVentas, ventas, setVentas,
+        ventas, setVentas,
         getVenta ,ventainf, setVentainf, ventainfProds, setVentainfProds, deleteVenta,
         refresh, refreshVenta,
         alert,

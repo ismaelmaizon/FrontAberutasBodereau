@@ -295,12 +295,19 @@ export default function Dashboard () {
         
         setCarro(venta.cart)
         tipos.map((ti)=>{
+            console.log(ti);
+            
             venta.cart.map((prod)=>{
+                console.log(prod);
+                
                 if(ti.id == prod.Tipo){
                     prod.Tipo = ti.Tipo
+                    prod.Descripcion = ti.Descripcion
                 }
             })
         })
+        console.log(venta);
+        
     },[])
     
 

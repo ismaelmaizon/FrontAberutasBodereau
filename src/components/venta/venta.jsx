@@ -13,6 +13,7 @@ import { Link,  } from "react-router-dom"
 
 export default function Venta() {
     const {
+        tipos,
         ventainf, ventainfProds
     } = useContext(MiContexto)
 
@@ -111,8 +112,8 @@ export default function Venta() {
                                 display: 'flex', flexDirection: "row", alignItems: "flex-start", justifyContent: "space-around",
                                 color: '#000', fontSize: '9px' }}  >
                             
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.IdGenerate}</Text>
+                                <Text style={{width: 40, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
+                                <Text style={{width: 120, height: 80, margin: 'auto'}}>{el.Descripcion}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.lugName}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>${el.subtotal}</Text>
@@ -222,7 +223,7 @@ export default function Venta() {
                                 color: '#000', fontSize: '9px' }}  >
                             
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>Tipo</Text>
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>ID</Text>
+                                <Text style={{width: 80, height: 40, margin: 'auto'}}>Descripcion</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>Cantidad</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>Lugar</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>SubTotal</Text>
@@ -235,8 +236,8 @@ export default function Venta() {
                                 display: 'flex', flexDirection: "row", alignItems: "flex-start", justifyContent: "space-around",
                                 color: '#000', fontSize: '9px' }}  >
                             
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.IdGenerate}</Text>
+                                <Text style={{width: 40, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
+                                <Text style={{width: 120, height: 80, margin: 'auto'}}>{el.Descripcion}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.lugName}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>${el.subtotal}</Text>
@@ -271,9 +272,11 @@ export default function Venta() {
     )}
     
     useEffect(()=>{
-        console.log(ventainfProds);        
+        console.log(ventainfProds);  
+        console.log(tipos);
+              
 
-    } ,[])
+    } ,[ventainfProds])
 
     return (
         <div>
@@ -299,7 +302,7 @@ export default function Venta() {
                         </Grid>
                         <Grid container item xs={12} direction='row' gap={2} paddingBottom={2} >
                                 <Grid item xs={2} ><Typography variant="body1" component='h3'>Tipo</Typography></Grid>
-                                <Grid item xs={2}><Typography variant="body1" component='h3'>ID</Typography></Grid>
+                                <Grid item xs={2}><Typography variant="body1" component='h3'>Descripcion</Typography></Grid>
                                 <Grid item xs={2}><Typography variant="body1" component='h3'>Cantidad</Typography></Grid>
                                 <Grid item xs={2}><Typography variant="body1" component='h3'>SubTotal</Typography></Grid>
                                 <Grid item xs={2}><Typography variant="body1" component='h3'>Galpon</Typography></Grid>
@@ -308,17 +311,15 @@ export default function Venta() {
                             <Grid container item xs={12} direction='row' gap={2}>
                                 {
                                 ventainfProds.map((el, index)=>{ 
+                                    console.log(el);
+                                    
                                     return <Grid item xs={12} key={index}
                                                 container direction="row" color='grey.500' gap={2} > 
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>{el.Tipo}</Typography></Grid>
-                                                    <Grid item xs={2}><Typography variant="body1" component='h3'>{el.IdGenerate} </Typography></Grid>
+                                                    <Grid item xs={2}><Typography variant="body1" component='h3'>{el.Descripcion} </Typography></Grid>
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>{el.cantidad}</Typography></Grid>
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>${el.subtotal}</Typography></Grid>
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>{el.lugName}</Typography></Grid>
-                                                    <Grid item xs={2}><Button variant="outlined" onClick={ ()=>{ 
-                                                        console.log(el);
-                                                
-                                                    }}>devolver</Button></Grid>
                                         </Grid>
                                 })
                                 }
