@@ -11,7 +11,7 @@ export default function AddProducto () {
 
     const {getTipos, tipos, 
         getLugares, createProducto, insertProdLug, lugares, 
-        updateStockProduct, getProductos,
+        updateStockProduct,
         alert} = useContext(MiContexto)
 
     const router = useNavigate()
@@ -162,7 +162,6 @@ export default function AddProducto () {
                                 let res = await insertProdLug(data)
                                 if (res){ 
                                     await updateStockProduct(data.Idg)
-                                    await getProductos() 
                                     await alert('success')
                                     setTimeout(()=>{
                                         window.location.reload();

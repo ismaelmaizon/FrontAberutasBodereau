@@ -2,25 +2,14 @@ import { DataGrid, GridToolbar  } from '@mui/x-data-grid';
 //import { useDemoData } from '@mui/x-data-grid-generator';
 import { useContext, useEffect, useState } from 'react';
 import { MiContexto } from '../context/context';
-import { Autocomplete, Button, Card, CardActions, CardContent, FormControl, Grid, InputLabel, MenuItem, Select, Switch, TextField, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, Grid, Typography } from '@mui/material';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import SearchIcon from '@mui/icons-material/Search';
-import ReplyIcon from '@mui/icons-material/Reply';
-import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import InfoProducts from '../infoProducts/infoProducts';
 import SwitchVentasProd from '../switch/switchVentasProd';
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+
 const URL = import.meta.env.VITE_BACKEND_URL
 
 
@@ -29,17 +18,50 @@ export default function ProductosVenta() {
     const {
         getLocal, setview, view, 
         getTipos, tipos,
-        setVprod, setVent,
-        lugares, getLugares,
-        producto, productos, setProductoUbi,
-        getProducto, setProducto, getProductoIms, getVentas, setImgs,
-        filtrarTipoLadoLug, rows, setRows,
+        lugares, 
+        producto, productos, setProductos, setProductoUbi,
+        getProducto, setProducto, getProductoIms, setImgs,
+        rows, setRows,
         refresh,
-        lug, setLug, lado, setLado, tipo, setTipo, descr, setDescr,
         alert
     } = useContext(MiContexto)
 
     const router = useNavigate()
+
+    const [isLoading, setIsLoading] = useState(true);
+    
+    const getProductos = async () =>{
+        try {
+            const response = await fetch(`http://${URL}/api/productos/productos`, {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+    
+                // Manejo de respuestas no autorizadas
+            if (response.status === 401) {
+                console.error('Error 401: No autorizado. Verifica tus credenciales o sesión.');
+                // Aquí puedes redirigir al usuario a la página de login o mostrar un mensaje de error
+                return { status: 401, message: 'No autorizado' };
+            }
+            if (!response.ok) {
+                throw new Error('problemas al consultar en la navegacion');
+            }
+            const data = await response.json();
+            setProductos(data.response)
+            return response
+            } catch (error) {
+            let response = { status: 500 }
+            console.error('problemas al obtener productos:', error);
+            router('/')
+            return response        
+            }
+            finally {
+            setIsLoading(false); // Terminamos el estado de carga
+            }
+    }
 
     const [sold, setSold] = useState(null)
     const [frecuencia, setFrecuencia] = useState(null)
@@ -87,7 +109,6 @@ export default function ProductosVenta() {
         setProd(selection[0] || null)
     };
     
-    const [descripciones, setDescripciones] = useState([])
     
     const columns = [
         { field: 'col0', headerName: 'ID', width: 200},
@@ -101,16 +122,11 @@ export default function ProductosVenta() {
         { field: 'col8', headerName: 'PrecioUnidad', width: 150},
     ]
     
-    //Swich
-    const [checked, setChecked] = useState(false);
-    const handleChangeSwitch = (event) => {
-        console.log(event.target.checked)
-        setChecked(event.target.checked);
-    }
-    const label = { inputProps: { 'aria-label': 'Switch demo' } };
     
     
-    useEffect(()=>{        
+    useEffect(()=>{       
+        getProductos()
+        
         let prods = []
         let ids = []
         let descripcions = []
@@ -118,7 +134,6 @@ export default function ProductosVenta() {
             let descripcion = { label: ti.Descripcion }
             descripcions.push(descripcion)
         })
-        setDescripciones(descripcions)
         productos.map((prod)=>{ 
             let id = { label: prod.IdGenerate }
             tipos.map((ti)=>{
@@ -142,7 +157,6 @@ export default function ProductosVenta() {
             ids.push(id)
         })
         setRows(prods)
-        //setids(ids)
         const userView = getLocal('view');
         console.log(userView);
         setview(userView)
@@ -168,45 +182,58 @@ export default function ProductosVenta() {
                     
                     <Grid container direction={'row'} gap={4} paddingTop={2} paddingBottom={2} > 
                         <Grid item sx={2} >
-                        <Typography variant='h5' >Producto Seleccionado: </Typography> 
-                        </Grid>
-                        <Grid item sx={2} >
-                        <Typography variant='h6' >{selectedId} </Typography> 
-                        </Grid>
-                        <Grid item sx={2} >
-                            <Button variant="contained"  sx={{padding: '10px' }} endIcon={<SearchIcon />} disabled={!selectedId} onClick={ async ()=>{ 
-                                console.log(prod);
-                                
-                                setProductoUbi([]) 
-                                setProducto([])
-                                getTipos()
-                                setImgs([]) 
-                                let resp = await getProducto(prod)
-                                console.log(resp);
-                                let res = await getProductoIms(prod)
-                                console.log(res);
-                                resp ? ( 
-                                    setProducto(resp), 
-                                    res.status != 500 ? setImgs(res) : setImgs([])  
-                                ) : alert('error')
+                            <Typography variant='h5' >Producto Seleccionado: </Typography> 
+                            </Grid>
+                            <Grid item sx={2} >
+                            <Typography variant='h6' >{selectedId} </Typography> 
+                            </Grid>
+                            <Grid item sx={2} >
+                                <Button variant="contained"  sx={{padding: '10px' }} endIcon={<SearchIcon />} disabled={!selectedId} onClick={ async ()=>{ 
+                                    console.log(prod);
                                     
-                                }} >ver</Button>
+                                    setProductoUbi([]) 
+                                    setProducto([])
+                                    getTipos()
+                                    setImgs([]) 
+                                    let resp = await getProducto(prod)
+                                    console.log(resp);
+                                    let res = await getProductoIms(prod)
+                                    console.log(res);
+                                    resp ? ( 
+                                        setProducto(resp), 
+                                        res.status != 500 ? setImgs(res) : setImgs([])  
+                                    ) : alert('error')
+                                        
+                                    }} >ver</Button>
+                            </Grid>
+                            <Grid item sx={2}>
+                                <Button variant="contained"  sx={{width: '100px', height: '25px', padding: '20px' }} endIcon={<RotateLeftIcon />} onClick={()=>{
+                                    setSelectedId('')
+                                    setProd('')
+                                    refresh()
+                                    }}>refresh</Button>                        
+                            </Grid>
                         </Grid>
-                        <Grid item sx={2}>
-                            <Button variant="contained"  sx={{width: '100px', height: '25px', padding: '20px' }} endIcon={<RotateLeftIcon />} onClick={()=>{refresh()}}>refresh</Button>                        </Grid>
-                        </Grid>
-                    <DataGrid sx={{height: '700px', fontSize: '16px' }} rows={rows} columns={columns}  
-                        pageSizeOptions={[5, 10]}
-                        checkboxSelection={true}
-                        onRowSelectionModelChange={handleSelectionChange}
-                        slots={{
-                        toolbar: GridToolbar,
-                        }}
-                        slotProps={{
-                        toolbar: {
-                            showQuickFilter: true,
-                        },
-                        }} />
+
+                        {isLoading ?
+                            <p>Cargando productos...</p>
+                            
+                            :  
+                            <DataGrid sx={{height: '700px', fontSize: '16px' }} rows={rows} columns={columns}  
+                                pageSizeOptions={[5, 10]}
+                                checkboxSelection={true}
+                                disableMultipleRowSelection={true}
+                                onRowSelectionModelChange={handleSelectionChange}
+                                slots={{
+                                toolbar: GridToolbar,
+                                }}
+                                slotProps={{
+                                toolbar: {
+                                    showQuickFilter: true,
+                                },
+                                }} />
+                        
+                        }
                 </div>
                 <div style={{ height: 350, width: '85%', margin: 'auto',display: 'grid', gridTemplateRows: 'repeat(4, 1fr)', alignItems: 'center', gap: '250px'}}>
                     <Card sx={{ maxWidth: 300, boxShadow: 6}}>

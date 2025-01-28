@@ -136,10 +136,12 @@ export default function Ubiproducto() {
                                             <Tooltip title="Agregar al carrito">
                                                 <Button size="small" color="success" variant="contained" onClick={async ()=>{
                                                         let value = false
+                                                        console.log(cart);
+                                                        
                                                         cart.map((el)=>{  
                                                             console.log(el.id);  
                                                             console.log(producto.IdGenerate);
-                                                            if (el.id == producto.IdGenerate) {
+                                                            if (el.idg == producto.IdGenerate) {
                                                                 console.log('if');
                                                                 value = true
                                                             }

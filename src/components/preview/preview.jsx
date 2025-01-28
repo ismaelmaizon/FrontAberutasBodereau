@@ -2,15 +2,18 @@ import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { MiContexto } from "../context/context";
 import { Link, useNavigate } from "react-router-dom";
+import PercentIcon from '@mui/icons-material/Percent';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import NavBar from "../navbar/navBar";
+import Swal from "sweetalert2";
 
 
 
 export default function Preview () {
 
     const {
+        descuentos, setDecuentos,
         tipos,
         productos ,cart, setCart, venta, setVenta,
         registrarVenta, alert
@@ -56,6 +59,38 @@ export default function Preview () {
     }
     
 
+    const aplicarDescuento = async (index) => {
+        console.log(cart[index]);
+        console.log(descuentos);
+        Swal.fire({
+                    title: "Ingrese descuento a aplicar en %",
+                    input: "number",
+                    inputAttributes: {
+                    autocapitalize: "off"
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: "aceptar",
+                    showLoaderOnConfirm: true,
+                }).then( async (result) => {
+                    console.log(result);
+                    console.log(result.value);
+                    console.log( parseInt(cart[index].subTotal) * parseInt(result.value) );
+                    cart[index].subTotal = cart[index].subTotal - ( ( parseInt(cart[index].subTotal) * parseInt(result.value) ) / 100 )
+                    
+                    console.log(cart[index]);
+                    setCart(cart)
+                    
+                    console.log(cart);
+                    let full = 0
+                    cart.map((prod)=>{
+                        full += prod.subTotal
+                    }) 
+                    setTotal(full)
+                })
+        
+        
+    }
+
     useEffect(()=>{        
         const data = {
             'cliente': cliente,
@@ -99,8 +134,9 @@ export default function Preview () {
         setCantidades(newCantidades)
         console.log(cart);
         
+        console.log(total);
         
-    }, [])
+    }, [total])
 
     return(
         <div>
@@ -141,7 +177,38 @@ export default function Preview () {
                                                                 </Grid>
                                                                 <Grid item xs={6} color='black' align={'center'} >
                                                                     <Button size="large"  variant="contained" color='secondary' onClick={()=>{deletePordCart(el.id)}} ><DeleteIcon /></Button>
+                                                                    <Button size="large"  variant="contained" color='secondary' onClick={ async ()=>{ 
+                                                                        console.log(cart[index]);
+                                                                        console.log(descuentos);
+                                                                        Swal.fire({
+                                                                                    title: "Ingrese descuento a aplicar en %",
+                                                                                    input: "number",
+                                                                                    inputAttributes: {
+                                                                                    autocapitalize: "off"
+                                                                                    },
+                                                                                    showCancelButton: true,
+                                                                                    confirmButtonText: "aceptar",
+                                                                                    showLoaderOnConfirm: true,
+                                                                                }).then( async (result) => {
+                                                                                    console.log(result);
+                                                                                    console.log(result.value);
+                                                                                    console.log( parseInt(cart[index].subTotal) * parseInt(result.value) );
+                                                                                    cart[index].subTotal = cart[index].subTotal - ( ( parseInt(cart[index].subTotal) * parseInt(result.value) ) / 100 )
+                                                                                    
+                                                                                    console.log(cart[index]);
+                                                                                    await setCart(cart)
+                                                                                    console.log(cart);
+                                                                                    let full = 0
+                                                                                    cart.map((prod)=>{
+                                                                                        full += prod.subTotal
+                                                                                    })
+                                                                                    
+                                                                                    await setTotal(full)
+                                                                            
+                                                                                })
+                                                                     }} ><PercentIcon /></Button>
                                                                 </Grid>
+                                                                
                                                         </Grid>
                                                 })}
                                                 

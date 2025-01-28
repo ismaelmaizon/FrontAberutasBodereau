@@ -5,7 +5,7 @@ import { MiContexto } from "../context/context"
 //lugares
 import {Box, Button, Card, CardActions, CardContent, CardMedia, Grid, Typography} from '@mui/material';
 //productos
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 //icon
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import BackupRoundedIcon from '@mui/icons-material/BackupRounded';
@@ -14,11 +14,9 @@ import ArrowLeftRoundedIcon from '@mui/icons-material/ArrowLeftRounded';
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import { green, red } from "@mui/material/colors";
-import DeleteIcon from '@mui/icons-material/Delete';
 import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 //alert
 import Swal from 'sweetalert2'
-import Ubiproducto from "../ubiproducto/ubiproducto";
 
 const URL = import.meta.env.VITE_BACKEND_URL
 
@@ -69,13 +67,12 @@ export default function InfoProdVenta() {
     const {
         alert, view, refresh,
         tipos, getTipos, setCart, cart, lugares,
-        producto, deleteProductoImg, setIdg,
-        deleteProducto, imgs, addimgProduct, getProductoIms, setImgs, getUbiProducto, setUbi
+        producto,
+        deleteProducto, imgs, addimgProduct, getProductoIms, setImgs, getUbiProducto
     } = useContext(MiContexto)    
 
     const router = useNavigate()
 
-    const [viewLug, setViewLug ] = useState(false)
     const [load, setLoad ] = useState(false)
     const [prod, setProd ] = useState({})
     const [file, setFile] = useState(null)
@@ -154,11 +151,27 @@ export default function InfoProdVenta() {
                     })
                 })
                 
-                
-                carrito.push(info)                    
-                setCart(carrito) 
-                alert('success')
-                refresh()  
+                if (info.id === '') {
+                                        
+                    setCart(carrito) 
+                    console.log(carrito);
+                    
+                    Swal.fire({
+                        icon: "error",
+                        title: "problemas por la cantidad",
+                        text: "revisar stock de cada deposito",
+                    });
+                    refresh()  
+                    
+                }else{
+
+                    carrito.push(info)                    
+                    setCart(carrito) 
+                    console.log(carrito);
+                    
+                    alert('success')
+                    refresh()  
+                }
                 
             }else{ alert('error') }
         }) :  

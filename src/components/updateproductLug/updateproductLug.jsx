@@ -12,9 +12,9 @@ import NavBar from "../navbar/navBar";
 
 export default function UpdateProductLug () {
 
-    const {idg, refresh,
+    const {
+        idg, refresh,
         updateproductolugar,updateStockProduct, alert,
-        getProductos,
         getProducto, getProductoIms, setProductoUbi, 
         setProducto,
         getTipos,
@@ -114,7 +114,6 @@ export default function UpdateProductLug () {
                                     setImgs([]) 
                                     let r = await getProducto(data.Idg)
                                     let t = await getProductoIms(data.Idg)
-                                    await getProductos()
                                     r ? ( 
                                         setProducto(r), 
                                         t.status != 500 ? setImgs(t) : setImgs([])  
