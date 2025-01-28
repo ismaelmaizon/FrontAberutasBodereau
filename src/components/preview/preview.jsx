@@ -127,6 +127,7 @@ export default function Preview () {
             newCart.map((el)=>{
                 if(ti.id == el.Tipo){
                     el.Tipo = ti.Tipo
+                    el.Descripcion = ti.Descripcion
                 }
             })
         })
