@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
 export default function Preview () {
 
     const {
-        descuentos, setDecuentos,
+        descuentos,
         tipos,
         productos ,cart, setCart, venta, setVenta,
         registrarVenta, alert
@@ -58,38 +58,6 @@ export default function Preview () {
         setCart(newCart)
     }
     
-
-    const aplicarDescuento = async (index) => {
-        console.log(cart[index]);
-        console.log(descuentos);
-        Swal.fire({
-                    title: "Ingrese descuento a aplicar en %",
-                    input: "number",
-                    inputAttributes: {
-                    autocapitalize: "off"
-                    },
-                    showCancelButton: true,
-                    confirmButtonText: "aceptar",
-                    showLoaderOnConfirm: true,
-                }).then( async (result) => {
-                    console.log(result);
-                    console.log(result.value);
-                    console.log( parseInt(cart[index].subTotal) * parseInt(result.value) );
-                    cart[index].subTotal = cart[index].subTotal - ( ( parseInt(cart[index].subTotal) * parseInt(result.value) ) / 100 )
-                    
-                    console.log(cart[index]);
-                    setCart(cart)
-                    
-                    console.log(cart);
-                    let full = 0
-                    cart.map((prod)=>{
-                        full += prod.subTotal
-                    }) 
-                    setTotal(full)
-                })
-        
-        
-    }
 
     useEffect(()=>{        
         const data = {
