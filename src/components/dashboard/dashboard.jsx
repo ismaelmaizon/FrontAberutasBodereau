@@ -14,7 +14,7 @@ export default function Dashboard () {
 
     const {
         tipos,
-        venta, alert, setCart, setVenta, deleteVenta, setVprod,
+        venta, alert, setCart, setVenta, deleteVenta,
         registrarProdsVenta,updateproductolugar,updateStockProduct
     } = useContext(MiContexto)
 
@@ -105,10 +105,11 @@ export default function Dashboard () {
                             margin: 2, height: 20,
                             display: 'flex', flexDirection: "row", alignItems: "flex-start", justifyContent: "space-around",
                             color: '#000', fontSize: '9px' }}  >
-                        
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>Tipo</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>ID</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>Cantidad</Text>
+                                
+                            <Text style={{width: 100, height: 40, margin: 'auto'}}>ID</Text> 
+                            <Text style={{width: 30, height: 40, margin: 'auto'}}>Tipo</Text>
+                            <Text style={{width: 120, height: 40, margin: 'auto'}}>Descripcion</Text>
+                            <Text style={{width: 40, height: 40, margin: 'auto'}}>Cantidad</Text>
                             <Text style={{width: 80, height: 40, margin: 'auto'}}>Lugar</Text>
                             <Text style={{width: 80, height: 40, margin: 'auto'}}>SubTotal</Text>
                     </View>       
@@ -119,10 +120,11 @@ export default function Dashboard () {
                             margin: 2, height: 20,
                             display: 'flex', flexDirection: "row", alignItems: "flex-start", justifyContent: "space-around",
                             color: '#000', fontSize: '9px' }}  >
-                        
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.idg}</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
+                                
+                            <Text style={{width: 100, height: 40, margin: 'auto'}}>{el.idg}</Text>
+                            <Text style={{width: 30, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
+                            <Text style={{width: 120, height: 80, margin: 'auto'}}>{el.Descripcion}</Text>
+                            <Text style={{width: 30, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
                             <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.lugar}</Text>
                             <Text style={{width: 80, height: 40, margin: 'auto'}}>${el.subTotal}</Text>
                         </View>
@@ -230,9 +232,10 @@ export default function Dashboard () {
                             display: 'flex', flexDirection: "row", alignItems: "flex-start", justifyContent: "space-around",
                             color: '#000', fontSize: '9px' }}  >
                         
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>Tipo</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>ID</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>Cantidad</Text>
+                            <Text style={{width: 100, height: 40, margin: 'auto'}}>ID</Text> 
+                            <Text style={{width: 30, height: 40, margin: 'auto'}}>Tipo</Text>
+                            <Text style={{width: 120, height: 40, margin: 'auto'}}>Descripcion</Text>
+                            <Text style={{width: 40, height: 40, margin: 'auto'}}>Cantidad</Text>
                             <Text style={{width: 80, height: 40, margin: 'auto'}}>Lugar</Text>
                             <Text style={{width: 80, height: 40, margin: 'auto'}}>SubTotal</Text>
                     </View>       
@@ -244,9 +247,10 @@ export default function Dashboard () {
                             display: 'flex', flexDirection: "row", alignItems: "flex-start", justifyContent: "space-around",
                             color: '#000', fontSize: '9px' }}  >
                         
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.idg}</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
+                            <Text style={{width: 100, height: 40, margin: 'auto'}}>{el.idg}</Text>
+                            <Text style={{width: 30, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
+                            <Text style={{width: 120, height: 80, margin: 'auto'}}>{el.Descripcion}</Text>
+                            <Text style={{width: 30, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
                             <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.lugar}</Text>
                             <Text style={{width: 80, height: 40, margin: 'auto'}}>${el.subTotal}</Text>
                         </View>
@@ -315,7 +319,7 @@ export default function Dashboard () {
     return(
         <div>
         <NavBar/>
-        <Card sx={{ width: '70%', display: 'flex', flexDirection: 'column', margin: 'auto', marginTop: '20px', marginBottom: '20px', padding: '15px' }} border='solid 0px' boxShadow='5px 2px 15px' >
+        <Card sx={{ width: '80%', display: 'flex', flexDirection: 'column', margin: 'auto', marginTop: '20px', marginBottom: '20px', padding: '15px' }} border='solid 0px' boxShadow='5px 2px 15px' >
                                         <Grid container direction='column' margin='auto' >
                                                 <Typography margin='auto' variant="h3" component='h3' fontFamily={'fantasy'} >
                                                     Venta a Registrar
@@ -342,10 +346,11 @@ export default function Dashboard () {
                                                     <Typography variant="h4" component='h3' color="InfoText" marginBottom={2} fontFamily={'fantasy'}>{venta.id_venta}</Typography>
                                                     </Grid>
                                                 </Grid>
-                                                <Grid container item xs={12} direction='row' gap={2} paddingBottom={2} >
-                                                    <Grid item xs={2} ><Typography variant="body1" component='h3'>Tipo</Typography></Grid>
+                                                <Grid container item xs={16} direction='row' gap={2} paddingBottom={2} >
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>ID</Typography></Grid>
-                                                    <Grid item xs={2}><Typography variant="body1" component='h3'>Cantidad</Typography></Grid>
+                                                    <Grid item xs={1} ><Typography variant="body1" component='h3'>Tipo</Typography></Grid>
+                                                    <Grid item xs={3}><Typography variant="body1" component='h3'>Descripcion</Typography></Grid>
+                                                    <Grid item xs={1}><Typography variant="body1" component='h3'>Cantidad</Typography></Grid>
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>Lugar</Typography></Grid>
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>SubTotal</Typography></Grid>
                                                     
@@ -355,9 +360,10 @@ export default function Dashboard () {
                                                     venta.cart.map((el, index)=>{ 
                                                         return <Grid item xs={12} key={index}
                                                                     container direction="row" color='grey.500' gap={2} > 
-                                                                        <Grid item xs={2}><Typography variant="body1" component='h3'>{el.Tipo}</Typography></Grid>
-                                                                        <Grid item xs={2}><Typography variant="body1" component='h3'>{el.idg} </Typography></Grid>
-                                                                        <Grid item xs={2}><Typography variant="body1" component='h3'>{el.cantidad}</Typography></Grid>
+                                                                        <Grid item xs={2}><Typography variant="body1" component='h3'>{el.idg}</Typography></Grid>
+                                                                        <Grid item xs={1}><Typography variant="body1" component='h3'>{el.Tipo}</Typography></Grid>
+                                                                        <Grid item xs={3}><Typography variant="body1" component='h3'>{el.Descripcion} </Typography></Grid>
+                                                                        <Grid item xs={1}><Typography variant="body1" component='h3'>{el.cantidad}</Typography></Grid>
                                                                         <Grid item xs={2}><Typography variant="body1" component='h3'>{el.lugar}</Typography></Grid>
                                                                         <Grid item xs={2}><Typography variant="body1" component='h3'>${el.subTotal}</Typography></Grid>
                                                             </Grid>
@@ -426,7 +432,6 @@ export default function Dashboard () {
                                                     alert('success')
                                                     setCart([])
                                                     setVenta({})
-                                                    setVprod(false)
                                                     router('/inicio') 
                                                     }} >
                                                         finalizar 

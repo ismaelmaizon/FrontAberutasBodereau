@@ -98,11 +98,12 @@ export default function Venta() {
                                 display: 'flex', flexDirection: "row", alignItems: "flex-start", justifyContent: "space-around",
                                 color: '#000', fontSize: '9px' }}  >
                             
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>Tipo</Text>
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>ID</Text>
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>Cantidad</Text>
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>Lugar</Text>
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>SubTotal</Text>
+                            <Text style={{width: 100, height: 40, margin: 'auto'}}>ID</Text> 
+                            <Text style={{width: 30, height: 40, margin: 'auto'}}>Tipo</Text>
+                            <Text style={{width: 120, height: 40, margin: 'auto'}}>Descripcion</Text>
+                            <Text style={{width: 40, height: 40, margin: 'auto'}}>Cantidad</Text>
+                            <Text style={{width: 80, height: 40, margin: 'auto'}}>Lugar</Text>
+                            <Text style={{width: 80, height: 40, margin: 'auto'}}>SubTotal</Text>
                         </View>       
                         {
                         ventainfProds.map((el, index)=>{ 
@@ -112,9 +113,10 @@ export default function Venta() {
                                 display: 'flex', flexDirection: "row", alignItems: "flex-start", justifyContent: "space-around",
                                 color: '#000', fontSize: '9px' }}  >
                             
-                                <Text style={{width: 40, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
+                                <Text style={{width: 100, height: 40, margin: 'auto'}}>{el.IdGenerate}</Text>
+                                <Text style={{width: 30, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
                                 <Text style={{width: 120, height: 80, margin: 'auto'}}>{el.Descripcion}</Text>
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
+                                <Text style={{width: 30, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.lugName}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>${el.subtotal}</Text>
                             </View>
@@ -222,9 +224,10 @@ export default function Venta() {
                                 display: 'flex', flexDirection: "row", alignItems: "flex-start", justifyContent: "space-around",
                                 color: '#000', fontSize: '9px' }}  >
                             
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>Tipo</Text>
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>Descripcion</Text>
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>Cantidad</Text>
+                                <Text style={{width: 100, height: 40, margin: 'auto'}}>ID</Text> 
+                                <Text style={{width: 30, height: 40, margin: 'auto'}}>Tipo</Text>
+                                <Text style={{width: 120, height: 40, margin: 'auto'}}>Descripcion</Text>
+                                <Text style={{width: 40, height: 40, margin: 'auto'}}>Cantidad</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>Lugar</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>SubTotal</Text>
                         </View>       
@@ -236,9 +239,10 @@ export default function Venta() {
                                 display: 'flex', flexDirection: "row", alignItems: "flex-start", justifyContent: "space-around",
                                 color: '#000', fontSize: '9px' }}  >
                             
-                                <Text style={{width: 40, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
+                                <Text style={{width: 100, height: 40, margin: 'auto'}}>{el.IdGenerate}</Text>
+                                <Text style={{width: 30, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
                                 <Text style={{width: 120, height: 80, margin: 'auto'}}>{el.Descripcion}</Text>
-                                <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
+                                <Text style={{width: 30, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.lugName}</Text>
                                 <Text style={{width: 80, height: 40, margin: 'auto'}}>${el.subtotal}</Text>
                             </View>

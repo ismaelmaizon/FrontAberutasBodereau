@@ -13,7 +13,7 @@ export default function UpdateVenta () {
 
     const {
         estados, view, 
-        ventainf, setVent, refreshVenta, 
+        ventainf, refreshVenta, 
         ventainfProds, updateVenta, alert} = useContext(MiContexto)
 
     const router = useNavigate()
@@ -143,9 +143,10 @@ export default function UpdateVenta () {
                     </Grid>
                 </Grid>
                 <Grid container item xs={12} direction='row' gap={2} paddingBottom={2} mt={5} >
-                                <Grid item xs={2} ><Typography variant="body1" component='h3'>Tipo</Typography></Grid>
                                 <Grid item xs={2}><Typography variant="body1" component='h3'>ID</Typography></Grid>
-                                <Grid item xs={2}><Typography variant="body1" component='h3'>Cantidad</Typography></Grid>
+                                <Grid item xs={1} ><Typography variant="body1" component='h3'>Tipo</Typography></Grid>
+                                <Grid item xs={3} ><Typography variant="body1" component='h3'>Descripcion</Typography></Grid>
+                                <Grid item xs={1}><Typography variant="body1" component='h3'>Cantidad</Typography></Grid>
                                 <Grid item xs={2}><Typography variant="body1" component='h3'>SubTotal</Typography></Grid>
                                 
                             </Grid>
@@ -154,9 +155,10 @@ export default function UpdateVenta () {
                                 cart.map((el, index)=>{ 
                                     return <Grid item xs={12} key={index}
                                                 container direction="row" color='grey.500' gap={2} > 
-                                                    <Grid item xs={2}><Typography variant="body1" component='h3'>{el.Tipo}</Typography></Grid>
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>{el.IdGenerate} </Typography></Grid>
-                                                    <Grid item xs={2}><Typography variant="body1" component='h3'>{el.cantidad}</Typography></Grid>
+                                                    <Grid item xs={1}><Typography variant="body1" component='h3'>{el.Tipo}</Typography></Grid>
+                                                    <Grid item xs={3}><Typography variant="body1" component='h3'>{el.Descripcion}</Typography></Grid>
+                                                    <Grid item xs={1}><Typography variant="body1" component='h3'>{el.cantidad}</Typography></Grid>
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>${el.subtotal}</Typography></Grid>
                                                     <Grid item xs={2}><Button onClick={ async ()=>{ await deletePord(el.id) }} ><DeleteForeverRoundedIcon/></Button></Grid>
                                         </Grid>
@@ -176,7 +178,6 @@ export default function UpdateVenta () {
                             if (respon.status == 200) {
                                 await alert('success')
                                 refreshVenta()
-                                setVent(false)
                                 router('/inicio')
                             } else if (respon.status == 201){
                                 await alert('errorCreate')
