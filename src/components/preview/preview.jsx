@@ -161,18 +161,18 @@ export default function Preview () {
                                                                                 }).then( async (result) => {
                                                                                     console.log(result);
                                                                                     console.log(result.value);
-                                                                                    console.log( parseInt(cart[index].subTotal) * parseInt(result.value) );
+                                                                                    console.log( parseInt(cart[index].subTotal) * parseInt(result.value) / 100);
                                                                                     cart[index].subTotal = cart[index].subTotal - ( ( parseInt(cart[index].subTotal) * parseInt(result.value) ) / 100 )
                                                                                     
                                                                                     console.log(cart[index]);
-                                                                                    await setCart(cart)
+                                                                                    setCart(cart)
                                                                                     console.log(cart);
                                                                                     let full = 0
                                                                                     cart.map((prod)=>{
                                                                                         full += prod.subTotal
                                                                                     })
                                                                                     
-                                                                                    await setTotal(full)
+                                                                                    setTotal(full)
                                                                             
                                                                                 })
                                                                      }} ><PercentIcon /></Button>
