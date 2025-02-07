@@ -59,6 +59,38 @@ export default function Preview () {
     }
     
 
+    const aplicarDescuento = async (index) => {
+        console.log(cart[index]);
+        console.log(descuentos);
+        Swal.fire({
+                    title: "Ingrese descuento a aplicar en %",
+                    input: "number",
+                    inputAttributes: {
+                    autocapitalize: "off"
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: "aceptar",
+                    showLoaderOnConfirm: true,
+                }).then( async (result) => {
+                    console.log(result);
+                    console.log(result.value);
+                    console.log( parseInt(cart[index].subTotal) * parseInt(result.value) );
+                    cart[index].subTotal = cart[index].subTotal - ( ( parseInt(cart[index].subTotal) * parseInt(result.value) ) / 100 )
+                    
+                    console.log(cart[index]);
+                    setCart(cart)
+                    
+                    console.log(cart);
+                    let full = 0
+                    cart.map((prod)=>{
+                        full += prod.subTotal
+                    }) 
+                    setTotal(full)
+                })
+        
+        
+    }
+
     useEffect(()=>{        
         const data = {
             'cliente': cliente,
@@ -113,7 +145,7 @@ export default function Preview () {
             {
                 cart.length == 0 ? <Typography> El carrito se encuentra vacio </Typography> : 
             
-                venta.id_venta == '' ? <Box sx={{ width: '80%', display: 'flex', flexDirection: 'column', margin: 'auto', marginTop: '120px', padding: '15px' }} border='solid 0px' boxShadow='5px 2px 15px' >
+                <Box sx={{ width: '80%', display: 'flex', flexDirection: 'column', margin: 'auto', marginTop: '120px', padding: '15px' }} border='solid 0px' boxShadow='5px 2px 15px' >
                                         <Grid margin='auto' >
                                             <Typography fontSize={30} >Carrito de Ventas</Typography>
                                         </Grid>
@@ -161,7 +193,7 @@ export default function Preview () {
                                                                                 }).then( async (result) => {
                                                                                     console.log(result);
                                                                                     console.log(result.value);
-                                                                                    console.log( parseInt(cart[index].subTotal) * parseInt(result.value) / 100);
+                                                                                    console.log( parseInt(cart[index].subTotal) * parseInt(result.value) );
                                                                                     cart[index].subTotal = cart[index].subTotal - ( ( parseInt(cart[index].subTotal) * parseInt(result.value) ) / 100 )
                                                                                     
                                                                                     console.log(cart[index]);
@@ -273,8 +305,7 @@ export default function Preview () {
                                             
                                         </Grid>
                                         </Box> 
-        : 
-        <Box> ID:{venta.id_venta}  </Box>
+        
                 
                 
             }

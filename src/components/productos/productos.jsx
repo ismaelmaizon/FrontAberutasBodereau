@@ -133,6 +133,9 @@ export default function Productos() {
     useEffect(()=>{       
         
         getProductos()
+        setTimeout(()=>{
+            getProductMostSold()
+        }, 1500)
         
         let prods = []
         let ids = []
@@ -170,7 +173,6 @@ export default function Productos() {
         setview(userView)
         console.log(view);
         console.log(tipos);
-        getProductMostSold()
         
     }, [isLoading])
 
