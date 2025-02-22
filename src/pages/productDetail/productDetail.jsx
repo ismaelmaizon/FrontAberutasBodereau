@@ -1,6 +1,6 @@
 
 import { useContext, useEffect, useRef, useState} from "react"
-import { MiContexto } from "../context/context"
+import { MiContexto } from "../../components/context/context"
 
 //lugares
 import {Box, Button, Card, CardActions, CardContent, CardMedia, Grid, Typography} from '@mui/material';
@@ -17,9 +17,19 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 //alert
 import Swal from 'sweetalert2'
-import Ubiproducto from "../ubiproducto/ubiproducto";
+import Ubiproducto from "../../components/ubiproducto/ubiproducto";
+
 
 const URL = import.meta.env.VITE_BACKEND_URL
+
+const formatearPrecio = (precio) => {
+    return new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+        minimumFractionDigits: 0 // Opcional, dependiendo si querés decimales o no
+    }).format(precio);
+};
+
 
 
 export default function PorductDetail() {
@@ -131,7 +141,7 @@ export default function PorductDetail() {
                     Derc: producto.Derc,
                     Izq: producto.Izq,
                     stock: producto.stock,
-                    Precio_U: producto.Precio_U
+                    Precio_U: `${formatearPrecio(producto.Precio_U)}` 
                     }  
                     setProd(newProd)
             }  
@@ -160,7 +170,7 @@ export default function PorductDetail() {
                                     Descripcion: {prod.Descripcion}
                                     </Typography>
                                     <Typography variant="h7" component={'h3'} color="text.secondary">
-                                    Precio: ${prod.Precio_U}
+                                    Precio: {prod.Precio_U}
                                     </Typography>
                                     <Typography variant="h7" component={'h3'} color="text.secondary">
                                     Stock: {prod.stock}

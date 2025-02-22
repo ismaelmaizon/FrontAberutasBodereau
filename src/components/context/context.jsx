@@ -14,11 +14,7 @@ const URL = import.meta.env.VITE_BACKEND_URL
  
 const CartProvider = ( { children } ) => {
 
-  const [descuentos, setDecuentos] = useState([
-    {id: 0, porcentaje: 15},
-    {id: 1, porcentaje: 20},
-    {id: 3, porcentaje: 50}
-  ])
+  const [descuentos, setDecuentos] = useState(null)
   
   
   //get cookie
@@ -623,7 +619,8 @@ const CartProvider = ( { children } ) => {
   const registrarVenta = async (data) => {
     const venta = {
       'cliente': data.cliente,
-      'total': data.total
+      'total': data.total,
+      'descuento': data.descuento
     }
     console.log(venta);
     try {
@@ -676,6 +673,7 @@ const CartProvider = ( { children } ) => {
           throw new Error('problemas al consultar en la navegacion');
         }
         const data = await response.json();
+        console.log(data);
         setIdv(data.venta[0].id_venta)
         setVentainf(data.venta[0])
         data.productos.map((v)=>{
@@ -694,9 +692,9 @@ const CartProvider = ( { children } ) => {
         setVentainfProds(data.productos)
         return data
       } catch (error) {
-      let response = { status: 500 }
-      console.error('problemas con la consulta:', error);
-      return response
+        let response = { status: 500 }
+        console.error('problemas con la consulta:', error);
+        return response
     }
       
   }

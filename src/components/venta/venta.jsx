@@ -10,6 +10,15 @@ import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 import {Button, Card, CardActions, Grid, Typography} from '@mui/material';
 import { Link,  } from "react-router-dom"
 
+const formatearPrecio = (precio) => {
+    return new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+        minimumFractionDigits: 0 // Opcional, dependiendo si querés decimales o no
+    }).format(precio);
+};
+
+
 
 export default function Venta() {
     const {
@@ -27,7 +36,7 @@ export default function Venta() {
                                 display: 'flex', flexDirection: "row", alignSelf: "center", justifyContent: "space-around",
                                 backgroundColor: 'grey', width: '20%' , height: '15px'
                             }}
-                            > Original
+                            > 
                             <Text style={{color: 'black', fontSize: '10px' }}> Original </Text>
                     </View>
                     <View style={{ 
@@ -141,6 +150,9 @@ export default function Venta() {
                             }}>
                         <View style={{width: '100%' , height: 40, backgroundColor: 'grey'}} >
                             <Text style={{width: '100%' , height: 40, backgroundColor: 'grey'}} > Total: ${ventainf.total} </Text>
+                            { 
+                            ventainf.estadoDesc == 1 ?  <Text style={{width: '100%' , height: 20, backgroundColor: 'red', fontSize: '10px'}}> Descuento Aplicado del {ventainf.descuento}% </Text> : <Text></Text>
+                            }
                         </View>
                         
                     </View>
@@ -152,7 +164,7 @@ export default function Venta() {
                                 display: 'flex', flexDirection: "row", alignSelf: "center", justifyContent: "space-around",
                                 backgroundColor: 'grey', width: '20%' , height: '15px'
                             }}
-                            > Original
+                            > 
                             <Text style={{color: 'black', fontSize: '10px' }}> Duplicado </Text>
                     </View>
                     
@@ -267,6 +279,9 @@ export default function Venta() {
                             }}>
                         <View style={{width: '100%' , height: 40, backgroundColor: 'grey'}} >
                             <Text style={{width: '100%' , height: 40, backgroundColor: 'grey'}} > Total: ${ventainf.total} </Text>
+                            { 
+                            ventainf.estadoDesc == 1 ?  <Text style={{width: '100%' , height: 20, backgroundColor: 'red', fontSize: '10px'}}> Descuento Aplicado del {ventainf.descuento}% </Text> : <Text></Text>
+                            }
                         </View>
                         
                     </View>
@@ -276,10 +291,9 @@ export default function Venta() {
     )}
     
     useEffect(()=>{
+        console.log(ventainf);  
         console.log(ventainfProds);  
         console.log(tipos);
-              
-
     } ,[ventainfProds])
 
     return (
@@ -301,8 +315,16 @@ export default function Venta() {
                                 <Grid item xs={6}><Typography variant="body1" component='h3'>Provincia: {ventainf.provincia}</Typography></Grid>
                                 <Grid item xs={6}><Typography variant="body1" component='h3'>Localidad: {ventainf.localidad}</Typography></Grid>
                                 <Grid item xs={6}><Typography variant="body1" component='h3'>Calle: {ventainf.calle} </Typography></Grid>
+                                { 
+                                ventainf.estadoDesc == 1 ?  <Grid item xs={6}>
+                                    <Typography variant="body1" component='h7' color={'red'} > Descuento Aplicado {ventainf.descuento}% </Typography>
+                                    </Grid> : <Grid item xs={6}>
+                                        <Typography variant="body1" component='h7' color={'green'} > sin Descuento </Typography>
+                                    </Grid> }
                                 <Grid item xs={6}><Typography variant="body1" component='h3'>Altura: {ventainf.altura} </Typography></Grid>
-                                <Grid item xs={6}><Typography variant="h5" component='h3'>Total: ${ventainf.total} </Typography></Grid>
+                                <Grid item xs={6}></Grid>
+                                <Grid item xs={6}></Grid>
+                                <Grid item xs={6}><Typography variant="h5" component='h3'>Total: {formatearPrecio(ventainf.total)} </Typography></Grid>
                         </Grid>
                         <Grid container item xs={12} direction='row' gap={2} paddingBottom={2} >
                                 <Grid item xs={2} ><Typography variant="body1" component='h3'>Tipo</Typography></Grid>
@@ -322,7 +344,7 @@ export default function Venta() {
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>{el.Tipo}</Typography></Grid>
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>{el.Descripcion} </Typography></Grid>
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>{el.cantidad}</Typography></Grid>
-                                                    <Grid item xs={2}><Typography variant="body1" component='h3'>${el.subtotal}</Typography></Grid>
+                                                    <Grid item xs={2}><Typography variant="body1" component='h3'>{formatearPrecio(el.subtotal)}</Typography></Grid>
                                                     <Grid item xs={2}><Typography variant="body1" component='h3'>{el.lugName}</Typography></Grid>
                                         </Grid>
                                 })

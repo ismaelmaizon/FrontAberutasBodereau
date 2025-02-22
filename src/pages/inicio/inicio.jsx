@@ -1,9 +1,10 @@
 
 import { useContext, useEffect} from "react"
-import { MiContexto } from "../context/context"
+import { MiContexto } from "../../components/context/context"
 import { useNavigate } from "react-router-dom";
 //lugares
 import {Button} from '@mui/material';
+import NavBar from "../../components/navbar/navBar";
 
 
 export default function Inicio() {
@@ -38,6 +39,7 @@ export default function Inicio() {
 
     return (
         <div>
+            <NavBar/>
             <div style={{ display: 'flex', marginTop: '45px' }} >
                    <Button variant="contained" size="large" color="secondary" style={{ height: '400px', width: '400px', margin: 'auto' }} 
                    onClick={ ()=>{  

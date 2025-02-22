@@ -1,10 +1,16 @@
 import { Box, Button, Grid, MenuItem, Skeleton, TextField, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { MiContexto } from "../context/context";
+import { MiContexto } from "../../components/context/context";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../navbar/navBar";
+import NavBar from "../../components/navbar/navBar";
 
-
+const formatearPrecio = (precio) => {
+    return new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+        minimumFractionDigits: 0 // Opcional, dependiendo si querés decimales o no
+    }).format(precio);
+};
 
 
 export default function UpDateProduct () {
@@ -150,7 +156,7 @@ export default function UpDateProduct () {
                         </Grid>
                         <Grid item xs={10} container direction="row" spacing={3} sx={{ margin:'auto' }}>
                                 <Grid item xs={6}>
-                                    <TextField fullWidth label={`$ ${data.Precio_U}`} name='Precio_U' type="text" onChange={dataFrom}></TextField>
+                                    <TextField fullWidth label={`${formatearPrecio(data.Precio_U)}`} name='Precio_U' type="text" onChange={dataFrom}></TextField>
                                 </Grid>
                                 
                         </Grid>
