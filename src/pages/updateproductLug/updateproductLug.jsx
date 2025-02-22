@@ -1,11 +1,11 @@
 import { Box, Button, Grid, MenuItem, TextField, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { MiContexto } from "../context/context";
+import { MiContexto } from "../../components/context/context";
 import { useNavigate } from "react-router-dom";
 
 //icon
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
-import NavBar from "../navbar/navBar";
+import NavBar from "../../components/navbar/navBar";
 
 
 

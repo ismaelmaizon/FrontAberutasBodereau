@@ -1,21 +1,29 @@
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 //import { useDemoData } from '@mui/x-data-grid-generator';
 import { useContext, useEffect, useState } from 'react';
-import { MiContexto } from '../context/context';
+import { MiContexto } from '../../components/context/context';
 import {Button, Card, CardActions, CardContent, Grid, Typography } from '@mui/material';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import SearchIcon from '@mui/icons-material/Search';
 import ReplyIcon from '@mui/icons-material/Reply';
 import { useNavigate } from 'react-router-dom';
-import InfoVentas from '../infoVentas/infoVentas';
-import SwitchVentasProd from '../switch/switchVentasProd';
-import ProductosVenta from '../productosVenta/productosVenta';
-import NavBar from '../navbar/navBar';
-import Venta from '../venta/venta';
-import InfoProdVenta from '../productosVenta/infoProdVenta';
+import InfoVentas from '../../components/infoVentas/infoVentas';
+import SwitchVentasProd from '../../components/switch/switchVentasProd';
+import ProductosVenta from '../../components/productosVenta/productosVenta';
+import NavBar from '../../components/navbar/navBar';
+import Venta from '../../components/venta/venta';
+import InfoProdVenta from '../../components/productosVenta/infoProdVenta';
 
 
 const URL = import.meta.env.VITE_BACKEND_URL
+
+const formatearPrecio = (precio) => {
+    return new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+        minimumFractionDigits: 0 // Opcional, dependiendo si querés decimales o no
+    }).format(precio);
+};
 
 
 export default function Ventas() {
@@ -56,6 +64,8 @@ export default function Ventas() {
             }
     
             const data = await response.json();
+            console.log(data);
+            
             setVentas(data.response);  // Asignar los datos a tu estado
             return data;
           } catch (error) {
@@ -94,6 +104,8 @@ export default function Ventas() {
         { field: 'col5', headerName: 'Cel', width: 150 },
         { field: 'col6', headerName: 'Total', width: 150 },
         { field: 'col7', headerName: 'Estado', width: 150 },
+        { field: 'col8', headerName: 'descuento', width: 150 },
+        { field: 'col9', headerName: 'estadoDesc', width: 150 },
     ]
 
 
@@ -127,8 +139,18 @@ export default function Ventas() {
                         col3: cliente.apellido,
                         col4: cliente.email,
                         col5: cliente.cel,
-                        col6: `$ ${cliente.total}`,
+                        col6: `${formatearPrecio(cliente.total)}`,
                         col7: est.estado
+                    }
+                    if (cliente.descuento == null) {
+                        newCliente.col8 = 0
+                    }else{
+                        newCliente.col8 = `${cliente.descuento}%`
+                    }
+                    if (cliente.estadoDesc == 0 ) {
+                        newCliente.col9 = 'sin descuento'
+                    }else{
+                        newCliente.col9 = 'con descuento'
                     }
                     vents.push(newCliente)
                     ids.push(id)
@@ -137,11 +159,8 @@ export default function Ventas() {
         })
         setRowsVent(vents)
         setidsVent(ids)
-            
-            
-        
-        
-    }, [isLoading])
+
+    }, [isLoading, ventid])
 
     return (
         <div >
@@ -175,26 +194,25 @@ export default function Ventas() {
                                         </Grid>
                                         <SwitchVentasProd/>
                                         
-                                        <Grid sx={{ display: {xs: 'none', md: 'grid', gridTemplateColumns: `repeat(5, 1fr)`, alignItems:'center', gap: '15px', marginTop: '25px', marginBottom: '25px'}}} container>
-                                            <Grid item>
+                                        <Grid container direction={'row'} gap={4} paddingTop={2} paddingBottom={2} >
+                                            <Grid item sx={2}>
                                                 <Typography variant='h5' >Venta Seleccionada: </Typography> 
-                                                <Typography variant='h6' > {selectedId} </Typography> 
-
                                             </Grid>
-                                            <Grid item container gap={5}>
-                                                <Grid>
-                                                    <Button variant="contained"  sx={{padding: '12px' }} endIcon={<SearchIcon />} disabled={!selectedId} onClick={ async ()=>{ 
-                                                        await getVenta(ventid)
-                                                        //console.log(res);
-                                                        }} >ver</Button>
-                                                </Grid>
-                                                <Grid item>
-                                                    <Button variant="contained" endIcon={<RotateLeftIcon />} sx={{width: '100px', height: '25px', padding: '25px' }} onClick={()=>{
-                                                        setVentid('')
-                                                        setSelectedId('')
-                                                        refreshVenta()
-                                                        }}>refresh</Button>
-                                                </Grid>
+                                            <Grid item sx={2}>
+                                                <Typography variant='h6' >{selectedId} </Typography> 
+                                            </Grid>
+                                            <Grid item sx={2}>
+                                                <Button variant="contained"  sx={{padding: '12px' }} endIcon={<SearchIcon />} disabled={!selectedId} onClick={ async ()=>{ 
+                                                    await getVenta(ventid)
+                                                    //console.log(res);
+                                                    }} >ver</Button>
+                                            </Grid>
+                                            <Grid item sx={2}>
+                                                <Button variant="contained" endIcon={<RotateLeftIcon />} sx={{width: '100px', height: '25px', padding: '25px' }} onClick={()=>{
+                                                    setVentid('')
+                                                    setSelectedId('')
+                                                    refreshVenta()
+                                                    }}>refresh</Button>
                                             </Grid>
                                         </Grid>
                                         {isLoading ? 

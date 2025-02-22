@@ -1,18 +1,27 @@
 import { DataGrid, GridToolbar  } from '@mui/x-data-grid';
 //import { useDemoData } from '@mui/x-data-grid-generator';
 import { useContext, useEffect, useState } from 'react';
-import { MiContexto } from '../context/context';
+import { MiContexto } from '../../components/context/context';
 import { Button, Card, CardActions, CardContent, Grid, Typography } from '@mui/material';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import SearchIcon from '@mui/icons-material/Search';
 import ReplyIcon from '@mui/icons-material/Reply';
 import { useNavigate } from 'react-router-dom';
-import InfoProducts from '../infoProducts/infoProducts';
-import NavBar from '../navbar/navBar';
+import InfoProducts from '../../components/infoProducts/infoProducts';
+import NavBar from '../../components/navbar/navBar';
 import PorductDetail from '../productDetail/productDetail';
 
 
 const URL = import.meta.env.VITE_BACKEND_URL
+
+const formatearPrecio = (precio) => {
+    return new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+        minimumFractionDigits: 0 // Opcional, dependiendo si querés decimales o no
+    }).format(precio);
+};
+
 
 
 export default function Productos() {
@@ -128,6 +137,7 @@ export default function Productos() {
         { field: 'col7', headerName: 'stock', width: 100 },
         { field: 'col8', headerName: 'PrecioUnidad', width: 150},
     ]
+
     
     
     useEffect(()=>{       
@@ -160,7 +170,7 @@ export default function Productos() {
                         col5: prod.Derc,
                         col6: prod.Izq,
                         col7: prod.stock,
-                        col8: `$ ${prod.Precio_U}`
+                        col8: `${ formatearPrecio(prod.Precio_U) }`
                     }
                     prods.push(newProd)
                 }
@@ -201,37 +211,37 @@ export default function Productos() {
                                     
                                 }}>ventas</Button>
                             </Grid>
-                            <Grid sx={{ display: { xs: 'none', md: 'grid', gridTemplateColumns: `repeat(5, 1fr)`, alignItems:'center', paddingBottom: '25px'},  gap: '5px' }} container>
-                                <Grid item >
+                            <Grid container direction={'row'} gap={4} paddingTop={2} paddingBottom={2}>
+                                <Grid item sx={2} >
                                     <Typography variant='h5' >Prod. Seleccionado: </Typography> 
+                                </Grid>
+                                <Grid item sx={2} >
                                     <Typography variant='h6' >{selectedId} </Typography> 
                                 </Grid>
-                                <Grid item container gap={5}>
-                                    <Grid>
-                                        <Button variant="contained"  sx={{padding: '10px' }} endIcon={<SearchIcon />} disabled={!selectedId} onClick={ async ()=>{ 
-                                            setProductoUbi([]) 
-                                            setProducto([])
-                                            getTipos()
-                                            setImgs([]) 
-                                            let resp = await getProducto(prod)
-                                            console.log(resp);
-                                            let res = await getProductoIms(prod)
-                                            console.log(res);
-                                            resp ? ( 
-                                                setProducto(resp), 
-                                                res.status != 500 ? setImgs(res) : setImgs([])  
-                                            ) : alert('error')
-                                                
-                                            }} >ver</Button>
-                                    </Grid>
-                                    <Grid item>
-                                        <Button variant="contained"  sx={{width: '100px', height: '25px', padding: '20px' }} endIcon={<RotateLeftIcon />} onClick={()=>{
-                                        setSelectedId('') 
-                                        setProd('')
-                                        refresh()
-                                        
-                                        }}>refresh</Button>
-                                    </Grid>
+                                <Grid item sx={2} >
+                                    <Button variant="contained"  sx={{padding: '10px' }} endIcon={<SearchIcon />} disabled={!selectedId} onClick={ async ()=>{ 
+                                        setProductoUbi([]) 
+                                        setProducto([])
+                                        getTipos()
+                                        setImgs([]) 
+                                        let resp = await getProducto(prod)
+                                        console.log(resp);
+                                        let res = await getProductoIms(prod)
+                                        console.log(res);
+                                        resp ? ( 
+                                            setProducto(resp), 
+                                            res.status != 500 ? setImgs(res) : setImgs([])  
+                                        ) : alert('error')
+                                            
+                                        }} >ver</Button>
+                                </Grid>
+                                <Grid item sx={2}>
+                                    <Button variant="contained"  sx={{width: '100px', height: '25px', padding: '20px' }} endIcon={<RotateLeftIcon />} onClick={()=>{
+                                    setSelectedId('') 
+                                    setProd('')
+                                    refresh()
+                                    
+                                    }}>refresh</Button>
                                 </Grid>
                             </Grid>
                             {isLoading ?

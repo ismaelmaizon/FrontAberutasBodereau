@@ -12,6 +12,13 @@ import SwitchVentasProd from '../switch/switchVentasProd';
 
 const URL = import.meta.env.VITE_BACKEND_URL
 
+const formatearPrecio = (precio) => {
+    return new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+        minimumFractionDigits: 0 // Opcional, dependiendo si querés decimales o no
+    }).format(precio);
+};
 
 export default function ProductosVenta() {
 
@@ -149,7 +156,7 @@ export default function ProductosVenta() {
                         col5: prod.Derc,
                         col6: prod.Izq,
                         col7: prod.stock,
-                        col8: `$ ${prod.Precio_U}`
+                        col8: `${formatearPrecio(prod.Precio_U)}`
                     }
                     prods.push(newProd)
                 }
@@ -163,7 +170,7 @@ export default function ProductosVenta() {
         console.log(view);
         console.log(tipos);
         getProductMostSold()
-    }, [sold])
+    }, [sold, prod])
 
     return (
         <div>
@@ -183,37 +190,37 @@ export default function ProductosVenta() {
                     <Grid container direction={'row'} gap={4} paddingTop={2} paddingBottom={2} > 
                         <Grid item sx={2} >
                             <Typography variant='h5' >Producto Seleccionado: </Typography> 
-                            </Grid>
-                            <Grid item sx={2} >
-                            <Typography variant='h6' >{selectedId} </Typography> 
-                            </Grid>
-                            <Grid item sx={2} >
-                                <Button variant="contained"  sx={{padding: '10px' }} endIcon={<SearchIcon />} disabled={!selectedId} onClick={ async ()=>{ 
-                                    console.log(prod);
-                                    
-                                    setProductoUbi([]) 
-                                    setProducto([])
-                                    getTipos()
-                                    setImgs([]) 
-                                    let resp = await getProducto(prod)
-                                    console.log(resp);
-                                    let res = await getProductoIms(prod)
-                                    console.log(res);
-                                    resp ? ( 
-                                        setProducto(resp), 
-                                        res.status != 500 ? setImgs(res) : setImgs([])  
-                                    ) : alert('error')
-                                        
-                                    }} >ver</Button>
-                            </Grid>
-                            <Grid item sx={2}>
-                                <Button variant="contained"  sx={{width: '100px', height: '25px', padding: '20px' }} endIcon={<RotateLeftIcon />} onClick={()=>{
-                                    setSelectedId('')
-                                    setProd('')
-                                    refresh()
-                                    }}>refresh</Button>                        
-                            </Grid>
                         </Grid>
+                        <Grid item sx={2} >
+                            <Typography variant='h6' >{selectedId} </Typography> 
+                        </Grid>
+                        <Grid item sx={2} >
+                            <Button variant="contained"  sx={{padding: '10px' }} endIcon={<SearchIcon />} disabled={!selectedId} onClick={ async ()=>{ 
+                                console.log(prod);
+                                
+                                setProductoUbi([]) 
+                                setProducto([])
+                                getTipos()
+                                setImgs([]) 
+                                let resp = await getProducto(prod)
+                                console.log(resp);
+                                let res = await getProductoIms(prod)
+                                console.log(res);
+                                resp ? ( 
+                                    setProducto(resp), 
+                                    res.status != 500 ? setImgs(res) : setImgs([])  
+                                ) : alert('error')
+                                    
+                                }} >ver</Button>
+                        </Grid>
+                        <Grid item sx={2}>
+                            <Button variant="contained"  sx={{width: '100px', height: '25px', padding: '20px' }} endIcon={<RotateLeftIcon />} onClick={()=>{
+                                setSelectedId('')
+                                setProd('')
+                                refresh()
+                                }}>refresh</Button>                        
+                        </Grid>
+                    </Grid>
 
                         {isLoading ?
                             <p>Cargando productos...</p>

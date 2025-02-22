@@ -1,13 +1,21 @@
 import { Box, Button, Grid, MenuItem, TextField, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { MiContexto } from "../context/context";
+import { MiContexto } from "../../components/context/context";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../navbar/navBar";
+import NavBar from "../../components/navbar/navBar";
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 
 
 
 let cartDelete = []
+
+const formatearPrecio = (precio) => {
+    return new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+        minimumFractionDigits: 0 // Opcional, dependiendo si querés decimales o no
+    }).format(precio);
+};
 
 export default function UpdateVenta () {
 
@@ -80,7 +88,7 @@ export default function UpdateVenta () {
         <div>
         <NavBar/>
         { view == 'view' ? 
-        <Box sx={{ width: '60%', margin: 'auto', marginTop: '50px', padding: '15px', boxShadow: '2px 2px 10px 2px' }}  >
+        <Box sx={{ width: '60%', margin: 'auto', marginTop: '50px', marginBottom: '50px', padding: '15px', boxShadow: '2px 2px 10px 2px' }}  >
             <Typography variant="h4" gutterBottom sx={{ width:'300px', margin: 'auto' }} >
                 Actualizar Venta
             </Typography>
@@ -120,7 +128,7 @@ export default function UpdateVenta () {
                             <TextField helperText='Altura' fullWidth label={ventainf.altura} name='altura' type="number" onChange={dataFrom}></TextField>
                             </Grid>
                             <Grid item xs={6}>
-                            <TextField helperText='Total' disabled fullWidth label={total} name='total' type="number" onChange={dataFrom}></TextField>
+                            <TextField helperText='Total' disabled fullWidth label={formatearPrecio(total)} name='total' type="number" onChange={dataFrom}></TextField>
                             </Grid>
                             <Grid item xs={6}>
                                 <TextField
@@ -159,7 +167,7 @@ export default function UpdateVenta () {
                                                     <Grid item xs={1}><Typography variant="body1" component='h3'>{el.Tipo}</Typography></Grid>
                                                     <Grid item xs={3}><Typography variant="body1" component='h3'>{el.Descripcion}</Typography></Grid>
                                                     <Grid item xs={1}><Typography variant="body1" component='h3'>{el.cantidad}</Typography></Grid>
-                                                    <Grid item xs={2}><Typography variant="body1" component='h3'>${el.subtotal}</Typography></Grid>
+                                                    <Grid item xs={2}><Typography variant="body1" component='h3'>{formatearPrecio(el.subtotal)}</Typography></Grid>
                                                     <Grid item xs={2}><Button onClick={ async ()=>{ await deletePord(el.id) }} ><DeleteForeverRoundedIcon/></Button></Grid>
                                         </Grid>
                                 })

@@ -1,28 +1,28 @@
 import { Avatar, Box, Button, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemText, styled, TextField, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { MiContexto } from "../context/context";
+import { MiContexto } from "../../components/context/context";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../navbar/navBar";
+import NavBar from "../../components/navbar/navBar";
 import AddHomeIcon from '@mui/icons-material/AddHome';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 
-
-  
 const Demo = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
 }));
+
 const URL = import.meta.env.VITE_BACKEND_URL
 
 
-export default function AddLugar () {
+export default function AddTipo () {
 
-    const {createLugar, getLugares , lugares , alert, refresh} = useContext(MiContexto)
+    const {createTipo, alert, getTipos, tipos, refresh} = useContext(MiContexto)
 
     const router = useNavigate()
 
     const [data, setData] = useState({
-        fullname: ''
+        Tipo: '',
+        Descripcion: ''
     });
 
     async function dataFrom(event) {
@@ -36,47 +36,51 @@ export default function AddLugar () {
     }
 
     useEffect(()=>{
-        getLugares()
-        console.log(lugares);
+        getTipos()
+        console.log(tipos);
         
     }, [])
+
 
     return(
         <div>
         <NavBar/>
-        <Box sx={{ width: '60%', margin: 'auto', marginTop: '120px', padding: '15px', boxShadow: '2px 2px 10px 2px' }} >
-            <Typography variant="h4" gutterBottom sx={{ width:'200px', margin: 'auto' }}>
-                Nuevo Lugar
+        <Box sx={{ width: '60%', margin: 'auto', marginTop: '80px', padding: '15px', boxShadow: '2px 2px 10px 2px' }} >
+            <Typography variant="h4" gutterBottom sx={{ width:'300px', margin: 'auto' }}  >
+                Agregar nuevo tipo
             </Typography>
             <Box component='form' onSubmit={handleSubmit} display={'flex'} flexDirection={'column'} >
-                    <Grid container direction="column" rowSpacing={1} spacing={5} marginBottom="20px" marginTop="20px" > 
+                    <Grid container direction="column" rowSpacing={1} spacing={5} marginBottom="20px" marginTop="20px">
                         <Grid item xs={8}>
-                        <TextField fullWidth label='Ingrese nuevo lugar' name='fullname' type="text" onChange={dataFrom}></TextField>
+                        <TextField fullWidth label='Tipo' name='Tipo' type="text" onChange={dataFrom}></TextField>
                         </Grid>
-                    </Grid>
-            <Grid container direction ='row' sx={{ width:'500px', margin: 'auto' }} spacing={5} >
+                        <Grid item xs={8}>
+                        <TextField fullWidth label='Descripcion' name='Descripcion' type="text" onChange={dataFrom}></TextField>
+                        </Grid>
+                    </Grid>      
+            <Grid container direction='row' sx={{ width:'500px', margin: 'auto' }} spacing={5} >
                     <Grid item xs={6}  >
-                        <Button type="submit" variant="contained" size="small" sx={{ width:'200px'}} onClick={()=>{
-                            refresh()
-                            router('/inicio')
-                        }}>volver</Button>
-                    </Grid>
+                            <Button type="submit" variant="contained" size="small" sx={{ width:'200px'}} onClick={()=>{
+                                refresh()
+                                router('/inicio')
+                            }}>volver</Button>
+                        </Grid>
                     <Grid item xs={6}  >
-                    <Button type="submit" variant="contained" size="small" sx={{ width:'200px', margin: 'auto' }}  onClick={ async ()=>{
+                    <Button type="submit" variant="contained" size="small" sx={{ width:'200px', margin: 'auto' }} onClick={ async ()=>{
                         console.log(data);
-                        let respon = await createLugar(data)
+                        let respon = await createTipo(data)
                         console.log(respon.status);
                         if (respon.status == 200) {
-                            await getLugares()
+                            await getTipos()
                             await alert('success')
                             window.location.reload();
                         }
-                    }} >crear</Button>
+                    }}  >crear</Button>
                     </Grid>
             </Grid>
             <Grid item xs={12} md={6}>
                 <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
-                    Lugares Existentes
+                    Tipos Existentes
                 </Typography>
                 <Demo>
                     <List sx={{width: '100%',
@@ -84,14 +88,15 @@ export default function AddLugar () {
                             position: 'relative',
                             overflow: 'auto',
                             maxHeight: 300}}>
+
                         {
-                            lugares.map((lugar, index)=>{
+                            tipos.map((tipo, index)=>{
                                 return (
-                                    <li key={index}>
+                                    <li key={index}  >
                                         <ListItem
                                         secondaryAction={
-                                            <IconButton edge="end" aria-label="delete"  onClick={ async ()=>{
-                                                const response = await fetch(`http://${URL}/api/lugares/lugares/${lugar.id}`,{
+                                            <IconButton edge="end" aria-label="delete" onClick={ async ()=>{
+                                                const response = await fetch(`http://${URL}/api/tipos//deleteTipo/${tipo.id}`,{
                                                     method: 'DELETE',
                                                     headers: {
                                                     'Content-Type': 'application/json'
@@ -101,14 +106,13 @@ export default function AddLugar () {
                                                 if (response.status == 200) {
                                                     await alert('success')
                                                     setTimeout( async ()=>{
-                                                        await getLugares()
+                                                        await getTipos()
                                                         window.location.reload();
                                                     }, 1500)
                                                 }else{
                                                     await alert('error')
                                                 }
-                                                        
-                                            }}  >
+                                            }} >
                                             <DeleteIcon />
                                             </IconButton>
                                         }
@@ -119,7 +123,10 @@ export default function AddLugar () {
                                             </Avatar>
                                         </ListItemAvatar>
                                         <ListItemText
-                                            primary={lugar.fullname}
+                                            primary={`${tipo.Tipo}`}
+                                        />
+                                        <ListItemText
+                                            primary={`${tipo.Descripcion}`}
                                         />
                                         </ListItem>
                                 </li>

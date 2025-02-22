@@ -1,14 +1,22 @@
 import { Box, Button, Card, Grid, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { MiContexto } from "../context/context";
+import { MiContexto } from "../../components/context/context";
 import { Link, useNavigate } from "react-router-dom";
 import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 import SendIcon from '@mui/icons-material/Send';
 
 
 import { Page, Text, View, Document, PDFDownloadLink, Image } from '@react-pdf/renderer';
-import NavBar from "../navbar/navBar";
+import NavBar from "../../components/navbar/navBar";
 
+
+const formatearPrecio = (precio) => {
+    return new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+        minimumFractionDigits: 0 // Opcional, dependiendo si querés decimales o no
+    }).format(precio);
+};
 
 export default function Dashboard () {
 
@@ -34,7 +42,7 @@ export default function Dashboard () {
                             display: 'flex', flexDirection: "row", alignSelf: "center", justifyContent: "space-around",
                             backgroundColor: 'grey', width: '20%' , height: '15px'
                         }}
-                        > Original
+                        > 
                         <Text style={{color: 'black', fontSize: '10px' }}> Original </Text>
                 </View>
                 
@@ -126,7 +134,7 @@ export default function Dashboard () {
                             <Text style={{width: 120, height: 80, margin: 'auto'}}>{el.Descripcion}</Text>
                             <Text style={{width: 30, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
                             <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.lugar}</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>${el.subTotal}</Text>
+                            <Text style={{width: 80, height: 40, margin: 'auto'}}>{formatearPrecio(el.subTotal)}</Text>
                         </View>
                         
                     })
@@ -148,7 +156,10 @@ export default function Dashboard () {
                         justifyContent: "space-around",
                         }}>
                     <View style={{width: '100%' , height: 40, backgroundColor: 'grey'}} >
-                        <Text style={{width: '100%' , height: 40, backgroundColor: 'grey'}} > Total: ${venta.total} </Text>
+                        <Text style={{width: '100%' , height: 40, backgroundColor: 'grey'}} > Total: {formatearPrecio(venta.total) } </Text>
+                        { 
+                            venta.descuento != null ?  <Text style={{width: '100%' , height: 20, backgroundColor: 'red', fontSize: '10px'}}> Descuento Aplicado del {venta.descuento}% </Text> : <Text></Text>
+                        }
                     </View>
                     
                 </View>
@@ -160,7 +171,7 @@ export default function Dashboard () {
                             display: 'flex', flexDirection: "row", alignSelf: "center", justifyContent: "space-around",
                             backgroundColor: 'grey', width: '20%' , height: '15px'
                         }}
-                        > Original
+                        > 
                         <Text style={{color: 'black', fontSize: '10px' }}> Duplicado </Text>
                 </View>
                 
@@ -252,7 +263,7 @@ export default function Dashboard () {
                             <Text style={{width: 120, height: 80, margin: 'auto'}}>{el.Descripcion}</Text>
                             <Text style={{width: 30, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
                             <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.lugar}</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>${el.subTotal}</Text>
+                            <Text style={{width: 80, height: 40, margin: 'auto'}}>{formatearPrecio(el.subTotal)} </Text>
                         </View>
                         
                     })
@@ -274,7 +285,10 @@ export default function Dashboard () {
                         justifyContent: "space-around",
                         }}>
                     <View style={{width: '100%' , height: 40, backgroundColor: 'grey'}} >
-                        <Text style={{width: '100%' , height: 40, backgroundColor: 'grey'}} > Total: ${venta.total} </Text>
+                        <Text style={{width: '100%' , height: 40, backgroundColor: 'grey'}} > Total: {formatearPrecio(venta.total) }</Text>
+                        { 
+                            venta.descuento != null ?  <Text style={{width: '100%' , height: 20, backgroundColor: 'red', fontSize: '10px'}}> Descuento Aplicado del {venta.descuento}% </Text> : <Text></Text>
+                        }
                     </View>
                     
                 </View>
@@ -365,7 +379,7 @@ export default function Dashboard () {
                                                                         <Grid item xs={3}><Typography variant="body1" component='h3'>{el.Descripcion} </Typography></Grid>
                                                                         <Grid item xs={1}><Typography variant="body1" component='h3'>{el.cantidad}</Typography></Grid>
                                                                         <Grid item xs={2}><Typography variant="body1" component='h3'>{el.lugar}</Typography></Grid>
-                                                                        <Grid item xs={2}><Typography variant="body1" component='h3'>${el.subTotal}</Typography></Grid>
+                                                                        <Grid item xs={2}><Typography variant="body1" component='h3'> {formatearPrecio(el.subTotal) }</Typography></Grid>
                                                             </Grid>
                                                     })
                                                     }
@@ -375,7 +389,10 @@ export default function Dashboard () {
                                         <Grid container padding={2} direction='row' width='100%' marginTop={5} >
                                             <Grid item xs={4}>
                                                 <Typography paddingBottom={3} variant="h5" component='h3' >
-                                                    Total: ${venta.total}
+                                                    Total: {formatearPrecio(venta.total) }
+                                                { 
+                                                venta.descuento != null ?  <Typography variant="h6" component='h3' color={'red'}> Descuento Aplicado del {venta.descuento}% </Typography> : <Typography></Typography>
+                                                }
                                                 </Typography>
                                                 <Link to = '/inicio' >
                                                     <Button variant="contained" color='error' onClick={async () =>{
