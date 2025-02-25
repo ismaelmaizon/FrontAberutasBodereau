@@ -28,8 +28,8 @@ export default function Preview () {
     const router = useNavigate()
 
     
-    const [estado, setEstado] = useState(false)
-    const [cantidades, setCantidades] = useState([])
+    const [estadoSubTotal, setEstadoSubTotal] = useState(false)
+    const [estadoTotal, setEstadoTotal] = useState(false)
     const [estadoNombre, setEstadoNombre] = useState('')
     const [estadoApellido, setEstadoApellido] = useState('')
     const [estadoCel, setEstadoCel] = useState('')
@@ -73,8 +73,10 @@ export default function Preview () {
                 if (newQuantity < 1) {
                     newQuantity = 1
                 } // Evitar valores menores a 1
+                console.log(item);
                 
-                return { ...item, cantidad: newQuantity, subTotal: parseFloat(item.Precio_U) * newQuantity };
+                
+                return { ...item, cantidad: newQuantity, subTotal: parseFloat(item.precio_U) * newQuantity };
             }
             return item;
         });        
@@ -83,22 +85,47 @@ export default function Preview () {
     
         setTotal(full);
         setCart(newCart);
+        setEstadoSubTotal(false)
+
     };
 
-    const descuento = (porcentage, total) => {
+    const applyDescuento = (id, descuento) => {
+        const newCart = cart.map((item) => {
+            if (item.id === id) {
+                item.descuento = false
+                let newSubTotal = (parseInt(item.subTotal) * parseInt(descuento)) / 100  ;
+                console.log(newSubTotal);
+                console.log(item.subTotal);
+                
+                return { ...item, subTotal: (item.subTotal - newSubTotal), descuento: true };
+            }
+            return item;
+        });  
+
+        let full = newCart.reduce((acc, item) => acc + item.subTotal, 0);
+        console.log(full);
+        
+    
+        setTotal(full);
+        setCart(newCart);
+        setEstadoSubTotal(true)
+    };
+
+    const descuentoTotal = (porcentage, total) => {
         console.log(total * porcentage);
         console.log( (total * porcentage)/100);
         
         let newTotal = total - ((total * porcentage) / 100)
 
         setTotal(newTotal);
-        setEstado(true)
+        setEstadoTotal(true)
     };
+
     
 
 
     useEffect(()=>{        
-        if (!estado) {
+        if (!estadoTotal && !estadoSubTotal) {
             const data = {
                 'cliente': cliente,
                 'cart': cart,
@@ -107,7 +134,7 @@ export default function Preview () {
             }
             setVenta(data)
             
-            let newCantidades = []
+           // let newCantidades = []
             let newCart = []
             let full = 0
             productos.map((prod)=>{
@@ -116,16 +143,17 @@ export default function Preview () {
                         let newProd = {
                             id: prod.id,
                             idg: prod.IdGenerate,
-                            Tipo: prod.Tipo,
+                            tipo: prod.Tipo,
                             lugar: prodc.lugar,
                             id_lugar: prodc.id_lugar,
-                            cantidad: prodc.cantidad,
+                            cantidad: parseInt(prodc.cantidad),
+                            precio_U: prod.Precio_U, 
                             subTotal: prod.Precio_U * prodc.cantidad
                         }
                         full += newProd.subTotal
                         console.log(newProd);
                         newCart.push(newProd)
-                        newCantidades.push(prodc.cantidad)
+                       // newCantidades.push(prodc.cantidad)
                     }
                 })  
             })
@@ -133,61 +161,22 @@ export default function Preview () {
             tipos.map((ti)=>{
                 newCart.map((el)=>{
                     if(ti.id == el.Tipo){
-                        el.Tipo = ti.Tipo
-                        el.Descripcion = ti.Descripcion
+                        el.tipo = ti.Tipo
+                        el.descripcion = ti.Descripcion
                     }
                 })
             })
             setCart(newCart)
-            setCantidades(newCantidades)
+            //setCantidades(newCantidades)
             console.log(cart);
             console.log(total);
 
         }else{
-            const data = {
-                'cliente': cliente,
-                'cart': cart,
-                'total': total,
-                'id_venta': ''
-            }
-            setVenta(data)
-            
-            let newCantidades = []
-            let newCart = []
-            productos.map((prod)=>{
-                cart.map((prodc)=>{
-                    if (prod.IdGenerate == prodc.id || prod.IdGenerate == prodc.idg) {
-                        let newProd = {
-                            id: prod.id,
-                            idg: prod.IdGenerate,
-                            Tipo: prod.Tipo,
-                            lugar: prodc.lugar,
-                            id_lugar: prodc.id_lugar,
-                            cantidad: prodc.cantidad,
-                            subTotal: prod.Precio_U * prodc.cantidad
-                        }
-                        console.log(newProd);
-                        newCart.push(newProd)
-                        newCantidades.push(prodc.cantidad)
-                    }
-                })  
-            })
-            
-            tipos.map((ti)=>{
-                newCart.map((el)=>{
-                    if(ti.id == el.Tipo){
-                        el.Tipo = ti.Tipo
-                        el.Descripcion = ti.Descripcion
-                    }
-                })
-            })
-            setCart(newCart)
-            setCantidades(newCantidades)
             console.log(cart);
-            console.log(total);
+            
         }
         
-    }, [total, estado])
+    }, [total, estadoTotal, estadoSubTotal])
 
     return(
         <div>
@@ -209,7 +198,7 @@ export default function Preview () {
                                                         
                                                         <Grid item xs={12} color='black' justifyItems={'center'} >
                                                             <Typography variant="h7" component={'h2'} color="text.secondary" paddingBottom={1} alignSelf='flex-start'>
-                                                                Tipo: {el.Tipo}
+                                                                Tipo: {el.tipo}
                                                             </Typography>  
                                                             <Typography variant="h6" component={'p'}>
                                                                 Producto: {el.idg} 
@@ -221,7 +210,9 @@ export default function Preview () {
                                                                 <Grid container direction={'row'} margin={1} >
                                                                     <Grid xs={6} item > 
                                                                         <Typography variant="h6" component={'p'}>
-                                                                        Cantidad: {cantidades[index]}
+                                                                        Cantidad: { el.cantidad
+                                                                        //cantidades[index]
+                                                                        }
                                                                         </Typography>
                                                                     </Grid>
                                                                     <Grid xs={4} item > 
@@ -236,6 +227,7 @@ export default function Preview () {
                                                                     </Grid>
                                                                 </Grid>
                                                             </Typography>
+
                                                         </Grid>
                                                         
                                                         <Grid item xs={6} color='black' align={'center'} >
@@ -248,6 +240,56 @@ export default function Preview () {
                                                                 <Button size="small" variant="contained" color='error' onClick={()=>{deletePordCart(el.id)}} ><DeleteIcon /></Button>
                                                             </Tooltip>
                                                         </Grid>
+                                                        { el.descuento == undefined ? 
+                                                        <Grid item xs={6} align={'center'} >
+                                                            <Tooltip title="aplicar descuento a producto">
+                                                                <Button size="small" variant="contained" color='success' onClick={()=>{
+                                                                    Swal.fire({
+                                                                        title: "Aplique numero de Descuento",
+                                                                        input: "number",
+                                                                        inputAttributes: {
+                                                                          autocapitalize: "off"
+                                                                        },
+                                                                        showCancelButton: true,
+                                                                        confirmButtonText: "aplicar",
+                                                                        showLoaderOnConfirm: true,
+                                                                      }).then( (result) => {
+                                                                        if (result.isConfirmed){
+                                                                            console.log(result.value);
+                                                                            applyDescuento(el.id, result.value)
+                                                                        } 
+                                                                        
+                                                                      });
+                                                                }} >%</Button>
+                                                            </Tooltip>
+                                                        </Grid>
+                                                        
+                                                        :
+                                                        
+                                                        <Grid item xs={6} align={'center'} >
+                                                            <Tooltip title="aplicar descuento a producto">
+                                                                <Button size="small" variant="contained" color='error' onClick={()=>{
+                                                                    Swal.fire({
+                                                                        title: "Aplique numero de Descuento",
+                                                                        input: "number",
+                                                                        inputAttributes: {
+                                                                          autocapitalize: "off"
+                                                                        },
+                                                                        showCancelButton: true,
+                                                                        confirmButtonText: "aplicar",
+                                                                        showLoaderOnConfirm: true,
+                                                                      }).then( (result) => {
+                                                                        if (result.isConfirmed){
+                                                                            console.log(result.value);
+                                                                            applyDescuento(el.id, result.value)
+                                                                        } 
+                                                                        
+                                                                      });
+                                                                }} >%</Button>
+                                                            </Tooltip>
+                                                        </Grid>
+                                                        
+                                                        }
                                                 </Grid>
                                         })}
                                         
@@ -301,7 +343,7 @@ export default function Preview () {
                                 <Grid container padding={2} direction='row' width='100%' >
                                     <Grid item xs={4}>
                                         <Typography variant="h7" component={'h5'} >
-                                            { estado ? <div>
+                                            { estadoTotal ? <div>
                                                 Descuento del {descuentos}% sobre total
                                             </div> :
                                             <div></div>
@@ -313,16 +355,16 @@ export default function Preview () {
                                         <Link to = '/inicio' >
                                             <Button variant="contained" color='error' sx={{margin : '5px'}} >volver</Button>
                                         </Link>
-                                        { estado ? 
+                                        { estadoTotal ? 
                                         <Tooltip title="Quitar Descuento">
                                             <Button variant="contained" color='error' sx={{margin : '5px'}}  onClick={ ()=>{
-                                                setEstado(false)
+                                                setEstadoTotal(false)
                                                 setDecuentos(null)
                                                    
                                             }} > - <PercentIcon/> </Button>
                                         </Tooltip> : 
                                         
-                                        <Tooltip title="Aplicar Descuento">
+                                        <Tooltip title="Aplicar Descuento al Total">
                                             <Button variant="contained" color='primary' sx={{margin : '5px'}}  onClick={ ()=>{
                                                 Swal.fire({
                                                     title: "Aplique numero de Descuento",
@@ -337,7 +379,7 @@ export default function Preview () {
                                                     if (result.isConfirmed){
                                                         console.log(result.value);
                                                         setDecuentos(result.value)
-                                                        descuento(result.value, total)
+                                                        descuentoTotal(result.value, total)
                                                     } 
                                                     
                                                   });
