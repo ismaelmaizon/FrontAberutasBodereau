@@ -404,7 +404,7 @@ export default function Venta() {
                                     cargando...</Button> : <Button startIcon={<LocalPrintshopIcon/>} onClick={ async ()=>{
                                     }} >
                                         Imprimir 
-                                    </Button>                                                         
+                                    </Button>                                                     cd
                                 }
                             </PDFDownloadLink>
                         </Grid>
