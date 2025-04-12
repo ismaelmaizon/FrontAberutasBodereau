@@ -114,12 +114,13 @@ export default function Dashboard () {
                             display: 'flex', flexDirection: "row", alignItems: "flex-start", justifyContent: "space-around",
                             color: '#000', fontSize: '9px' }}  >
                                 
-                            <Text style={{width: 100, height: 40, margin: 'auto'}}>ID</Text> 
-                            <Text style={{width: 30, height: 40, margin: 'auto'}}>Tipo</Text>
-                            <Text style={{width: 120, height: 40, margin: 'auto'}}>Descripcion</Text>
-                            <Text style={{width: 40, height: 40, margin: 'auto'}}>Cantidad</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>Lugar</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>SubTotal</Text>
+                            <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '10px'}}>ID</Text> 
+                            <Text style={{width: 30, height: 40, margin: 'auto', fontSize: '10px'}}>Tipo</Text>
+                            <Text style={{width: 120, height: 40, margin: 'auto', fontSize: '10px'}}>Descripcion</Text>
+                            <Text style={{width: 50, height: 40, margin: 'auto', fontSize: '10px'}}>Cantidad</Text>
+                            <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '10px'}}>Lugar</Text>
+                            <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '10px'}}>SubTotal</Text>
+                            <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '10px'}}>Descuento</Text>
                     </View>       
                     {
                     venta.cart.map((el, index)=>{ 
@@ -129,12 +130,18 @@ export default function Dashboard () {
                             display: 'flex', flexDirection: "row", alignItems: "flex-start", justifyContent: "space-around",
                             color: '#000', fontSize: '9px' }}  >
                                 
-                            <Text style={{width: 100, height: 40, margin: 'auto'}}>{el.idg}</Text>
-                            <Text style={{width: 30, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
-                            <Text style={{width: 120, height: 80, margin: 'auto'}}>{el.Descripcion}</Text>
-                            <Text style={{width: 30, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.lugar}</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>{formatearPrecio(el.subTotal)}</Text>
+                            <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '7px'}}>{el.idg}</Text>
+                            <Text style={{width: 30, height: 40, margin: 'auto', fontSize: '7px'}}>{el.tipo}</Text>
+                            <Text style={{width: 120, height: 80, margin: 'auto', fontSize: '7px'}}>{el.descripcion}</Text>
+                            <Text style={{width: 40, height: 40, margin: 'auto', fontSize: '7px'}}>{el.cantidad}</Text>
+                            <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '7px'}}>{el.lugar}</Text>
+                            <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '7px'}}>{formatearPrecio(el.subTotal)}</Text>
+                            {
+                                el.descuento == undefined ? <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '7px'}}>Sin Descuento</Text>
+                                :
+                                <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '7px'}}>{el.descuento}%</Text>
+                            }
+
                         </View>
                         
                     })
@@ -158,7 +165,7 @@ export default function Dashboard () {
                     <View style={{width: '100%' , height: 40, backgroundColor: 'grey'}} >
                         <Text style={{width: '100%' , height: 40, backgroundColor: 'grey'}} > Total: {formatearPrecio(venta.total) } </Text>
                         { 
-                            venta.descuento != null ?  <Text style={{width: '100%' , height: 20, backgroundColor: 'red', fontSize: '10px'}}> Descuento Aplicado del {venta.descuento}% </Text> : <Text></Text>
+                            venta.estadoDesc != null ?  <Text style={{width: '100%' , height: 20, backgroundColor: 'red', fontSize: '10px'}}> Con Descuento Aplicado </Text> : <Text></Text>
                         }
                     </View>
                     
@@ -243,12 +250,13 @@ export default function Dashboard () {
                             display: 'flex', flexDirection: "row", alignItems: "flex-start", justifyContent: "space-around",
                             color: '#000', fontSize: '9px' }}  >
                         
-                            <Text style={{width: 100, height: 40, margin: 'auto'}}>ID</Text> 
-                            <Text style={{width: 30, height: 40, margin: 'auto'}}>Tipo</Text>
-                            <Text style={{width: 120, height: 40, margin: 'auto'}}>Descripcion</Text>
-                            <Text style={{width: 40, height: 40, margin: 'auto'}}>Cantidad</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>Lugar</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>SubTotal</Text>
+                        <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '10px'}}>ID</Text> 
+                        <Text style={{width: 30, height: 40, margin: 'auto', fontSize: '10px'}}>Tipo</Text>
+                        <Text style={{width: 120, height: 40, margin: 'auto', fontSize: '10px'}}>Descripcion</Text>
+                        <Text style={{width: 50, height: 40, margin: 'auto', fontSize: '10px'}}>Cantidad</Text>
+                        <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '10px'}}>Lugar</Text>
+                        <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '10px'}}>SubTotal</Text>
+                        <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '10px'}}>Descuento</Text>
                     </View>       
                     {
                     venta.cart.map((el, index)=>{ 
@@ -257,13 +265,19 @@ export default function Dashboard () {
                             margin: 2, height: 20,
                             display: 'flex', flexDirection: "row", alignItems: "flex-start", justifyContent: "space-around",
                             color: '#000', fontSize: '9px' }}  >
-                        
-                            <Text style={{width: 100, height: 40, margin: 'auto'}}>{el.idg}</Text>
-                            <Text style={{width: 30, height: 40, margin: 'auto'}}>{el.Tipo}</Text>
-                            <Text style={{width: 120, height: 80, margin: 'auto'}}>{el.Descripcion}</Text>
-                            <Text style={{width: 30, height: 40, margin: 'auto'}}>{el.cantidad}</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>{el.lugar}</Text>
-                            <Text style={{width: 80, height: 40, margin: 'auto'}}>{formatearPrecio(el.subTotal)} </Text>
+                                
+                            <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '7px'}}>{el.idg}</Text>
+                            <Text style={{width: 30, height: 40, margin: 'auto', fontSize: '7px'}}>{el.tipo}</Text>
+                            <Text style={{width: 120, height: 80, margin: 'auto', fontSize: '7px'}}>{el.descripcion}</Text>
+                            <Text style={{width: 40, height: 40, margin: 'auto', fontSize: '7px'}}>{el.cantidad}</Text>
+                            <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '7px'}}>{el.lugar}</Text>
+                            <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '7px'}}>{formatearPrecio(el.subTotal)}</Text>
+                            {
+                                el.descuento == undefined ? <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '7px'}}>Sin Descuento</Text>
+                                :
+                                <Text style={{width: 80, height: 40, margin: 'auto', fontSize: '7px'}}>{el.descuento}%</Text>
+                            }
+
                         </View>
                         
                     })
@@ -287,7 +301,7 @@ export default function Dashboard () {
                     <View style={{width: '100%' , height: 40, backgroundColor: 'grey'}} >
                         <Text style={{width: '100%' , height: 40, backgroundColor: 'grey'}} > Total: {formatearPrecio(venta.total) }</Text>
                         { 
-                            venta.descuento != null ?  <Text style={{width: '100%' , height: 20, backgroundColor: 'red', fontSize: '10px'}}> Descuento Aplicado del {venta.descuento}% </Text> : <Text></Text>
+                            venta.estadoDesc != null ?  <Text style={{width: '100%' , height: 20, backgroundColor: 'red', fontSize: '10px'}}> Con Descuento Aplicado </Text> : <Text></Text>
                         }
                     </View>
                     
@@ -309,18 +323,13 @@ export default function Dashboard () {
             'altura': venta.cliente.altura
         }
         setCliente(v)
-        console.log(venta);
-        
+
         setCarro(venta.cart)
-        tipos.map((ti)=>{
-            console.log(ti);
-            
+        tipos.map((ti)=>{            
             venta.cart.map((prod)=>{
-                console.log(prod);
-                
-                if(ti.id == prod.Tipo){
-                    prod.Tipo = ti.Tipo
-                    prod.Descripcion = ti.Descripcion
+                if(ti.id == prod.tipo){
+                    prod.tipo = ti.Tipo
+                    prod.descripcion = ti.Descripcion
                 }
             })
         })
@@ -365,8 +374,9 @@ export default function Dashboard () {
                                                     <Grid item xs={1} ><Typography variant="body1" component='h3'>Tipo</Typography></Grid>
                                                     <Grid item xs={3}><Typography variant="body1" component='h3'>Descripcion</Typography></Grid>
                                                     <Grid item xs={1}><Typography variant="body1" component='h3'>Cantidad</Typography></Grid>
-                                                    <Grid item xs={2}><Typography variant="body1" component='h3'>Lugar</Typography></Grid>
-                                                    <Grid item xs={2}><Typography variant="body1" component='h3'>SubTotal</Typography></Grid>
+                                                    <Grid item xs={1}><Typography variant="body1" component='h3'>Lugar</Typography></Grid>
+                                                    <Grid item xs={1}><Typography variant="body1" component='h3'>SubTotal</Typography></Grid>
+                                                    <Grid item xs={1}><Typography variant="body1" component='h3'>Descuento</Typography></Grid>
                                                     
                                                 </Grid>
                                                 <Grid container item xs={12} direction='row' gap={2}>
@@ -375,11 +385,16 @@ export default function Dashboard () {
                                                         return <Grid item xs={12} key={index}
                                                                     container direction="row" color='grey.500' gap={2} > 
                                                                         <Grid item xs={2}><Typography variant="body1" component='h3'>{el.idg}</Typography></Grid>
-                                                                        <Grid item xs={1}><Typography variant="body1" component='h3'>{el.Tipo}</Typography></Grid>
-                                                                        <Grid item xs={3}><Typography variant="body1" component='h3'>{el.Descripcion} </Typography></Grid>
+                                                                        <Grid item xs={1}><Typography variant="body1" component='h3'>{el.tipo}</Typography></Grid>
+                                                                        <Grid item xs={3}><Typography variant="body1" component='h3'>{el.descripcion} </Typography></Grid>
                                                                         <Grid item xs={1}><Typography variant="body1" component='h3'>{el.cantidad}</Typography></Grid>
-                                                                        <Grid item xs={2}><Typography variant="body1" component='h3'>{el.lugar}</Typography></Grid>
-                                                                        <Grid item xs={2}><Typography variant="body1" component='h3'> {formatearPrecio(el.subTotal) }</Typography></Grid>
+                                                                        <Grid item xs={1}><Typography variant="body1" component='h3'>{el.lugar}</Typography></Grid>
+                                                                        <Grid item xs={1}><Typography variant="body1" component='h3'> {formatearPrecio(el.subTotal) }</Typography></Grid>
+                                                                        { el.descuento == undefined ? 
+                                                                        <Grid item xs={1}><Typography variant="body1" component='h3'> Sin Descuento </Typography></Grid> 
+                                                                        : 
+                                                                        <Grid item xs={1}><Typography variant="body1" component='h3'> {el.descuento} % </Typography></Grid> 
+                                                                        }
                                                             </Grid>
                                                     })
                                                     }
@@ -391,7 +406,7 @@ export default function Dashboard () {
                                                 <Typography paddingBottom={3} variant="h5" component='h3' >
                                                     Total: {formatearPrecio(venta.total) }
                                                 { 
-                                                venta.descuento != null ?  <Typography variant="h6" component='h3' color={'red'}> Descuento Aplicado del {venta.descuento}% </Typography> : <Typography></Typography>
+                                                venta.estadoDesc != false ?  <Typography variant="h6" component='h3' color={'red'}>Con Descuento Aplicado</Typography> : <Typography></Typography>
                                                 }
                                                 </Typography>
                                                 <Link to = '/inicio' >
@@ -423,10 +438,11 @@ export default function Dashboard () {
                                                             id_venta: venta.id_venta,
                                                             id_producto: el.id, 
                                                             IdGenerate: el.idg, 
-                                                            Tipo: el.Tipo, 
+                                                            Tipo: el.tipo, 
                                                             cantidad: el.cantidad, 
                                                             subtotal: el.subTotal,
-                                                            id_lugar: el.id_lugar
+                                                            id_lugar: el.id_lugar,
+                                                            descuento: el.descuento
                                                         }
                                                         let regProdVenta = await registrarProdsVenta(infoProd)                                                        
                                                         if (regProdVenta.status == 200) {

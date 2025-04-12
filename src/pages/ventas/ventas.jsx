@@ -104,8 +104,7 @@ export default function Ventas() {
         { field: 'col5', headerName: 'Cel', width: 150 },
         { field: 'col6', headerName: 'Total', width: 150 },
         { field: 'col7', headerName: 'Estado', width: 150 },
-        { field: 'col8', headerName: 'descuento', width: 150 },
-        { field: 'col9', headerName: 'estadoDesc', width: 150 },
+        { field: 'col8', headerName: 'estadoDesc', width: 150 },
     ]
 
 
@@ -142,15 +141,11 @@ export default function Ventas() {
                         col6: `${formatearPrecio(cliente.total)}`,
                         col7: est.estado
                     }
-                    if (cliente.descuento == null) {
-                        newCliente.col8 = 0
-                    }else{
-                        newCliente.col8 = `${cliente.descuento}%`
-                    }
+                    
                     if (cliente.estadoDesc == 0 ) {
-                        newCliente.col9 = 'sin descuento'
+                        newCliente.col8 = 'sin descuento'
                     }else{
-                        newCliente.col9 = 'con descuento'
+                        newCliente.col8 = 'con descuento'
                     }
                     vents.push(newCliente)
                     ids.push(id)

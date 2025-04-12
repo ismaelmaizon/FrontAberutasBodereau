@@ -322,8 +322,6 @@ const CartProvider = ( { children } ) => {
     }  
     console.log(data);
     console.log(file);
-    
-    
     try {
       const formData = new FormData();
       formData.append('file',file); // 'archivo' debe ser el archivo que deseas enviar
@@ -620,7 +618,7 @@ const CartProvider = ( { children } ) => {
     const venta = {
       'cliente': data.cliente,
       'total': data.total,
-      'descuento': data.descuento
+      'estadoDesc': data.estadoDesc
     }
     console.log(venta);
     try {
@@ -903,6 +901,14 @@ const CartProvider = ( { children } ) => {
   const [descr, setDescr] = useState('')
   const [ubi, setUbi] = useState(false)
 
+  const formatearPrecio = (precio) => {
+    return new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+        minimumFractionDigits: 0 // Opcional, dependiendo si querés decimales o no
+    }).format(precio);
+};
+
   const refresh = () =>{
       setUbi(false)
       setIdg('')
@@ -927,7 +933,7 @@ const CartProvider = ( { children } ) => {
                   col5: prod.Derc,
                   col6: prod.Izq,
                   col7: prod.stock,
-                  col8: prod.Precio_U
+                  col8: formatearPrecio(prod.Precio_U)
                 }
                 prods.push(newProd)
           }
@@ -963,11 +969,16 @@ const CartProvider = ( { children } ) => {
                     col3: cliente.apellido,
                     col4: cliente.email,
                     col5: cliente.cel,
-                    col6: cliente.total,
+                    col6: formatearPrecio(cliente.total),
                     col7: est.estado
                 }
-                vents.push(newCliente)
-                ids.push(id)
+            if (cliente.estadoDesc == 0 ) {
+                newCliente.col8 = 'sin descuento'
+            }else{
+                newCliente.col8 = 'con descuento'
+            }
+            vents.push(newCliente)
+            ids.push(id)
             }
         })
     })

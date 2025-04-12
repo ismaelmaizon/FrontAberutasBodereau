@@ -7,6 +7,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import NavBar from "../../components/navbar/navBar";
 import Swal from "sweetalert2";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+
 
 const formatearPrecio = (precio) => {
     return new Intl.NumberFormat('es-AR', {
@@ -19,7 +21,6 @@ const formatearPrecio = (precio) => {
 export default function Preview () {
 
     const {
-        descuentos, setDecuentos,
         tipos,
         productos, cart, setCart, setVenta,
         registrarVenta, alert
@@ -29,7 +30,6 @@ export default function Preview () {
 
     
     const [estadoSubTotal, setEstadoSubTotal] = useState(false)
-    const [estadoTotal, setEstadoTotal] = useState(false)
     const [estadoNombre, setEstadoNombre] = useState('')
     const [estadoApellido, setEstadoApellido] = useState('')
     const [estadoCel, setEstadoCel] = useState('')
@@ -74,7 +74,14 @@ export default function Preview () {
                     newQuantity = 1
                 } // Evitar valores menores a 1
                 console.log(item);
-                
+                if (newQuantity > item.stock) {
+                    Swal.fire({
+                        title: "Superaste el Stock Disponible",
+                        icon: "error",
+                        draggable: true
+                    });
+                    return { ...item, cantidad: item.cantidad, subTotal: parseFloat(item.precio_U) * newQuantity };
+                }
                 
                 return { ...item, cantidad: newQuantity, subTotal: parseFloat(item.precio_U) * newQuantity };
             }
@@ -97,7 +104,7 @@ export default function Preview () {
                 console.log(newSubTotal);
                 console.log(item.subTotal);
                 
-                return { ...item, subTotal: (item.subTotal - newSubTotal), descuento: true };
+                return { ...item, subTotal: (item.subTotal - newSubTotal), descuento: parseInt(descuento) };
             }
             return item;
         });  
@@ -111,21 +118,8 @@ export default function Preview () {
         setEstadoSubTotal(true)
     };
 
-    const descuentoTotal = (porcentage, total) => {
-        console.log(total * porcentage);
-        console.log( (total * porcentage)/100);
-        
-        let newTotal = total - ((total * porcentage) / 100)
-
-        setTotal(newTotal);
-        setEstadoTotal(true)
-    };
-
-    
-
-
     useEffect(()=>{        
-        if (!estadoTotal && !estadoSubTotal) {
+        if (!estadoSubTotal) {
             const data = {
                 'cliente': cliente,
                 'cart': cart,
@@ -145,6 +139,7 @@ export default function Preview () {
                             idg: prod.IdGenerate,
                             tipo: prod.Tipo,
                             lugar: prodc.lugar,
+                            stock: prod.stock,
                             id_lugar: prodc.id_lugar,
                             cantidad: parseInt(prodc.cantidad),
                             precio_U: prod.Precio_U, 
@@ -160,7 +155,7 @@ export default function Preview () {
             setTotal(full)
             tipos.map((ti)=>{
                 newCart.map((el)=>{
-                    if(ti.id == el.Tipo){
+                    if(ti.id == el.tipo){
                         el.tipo = ti.Tipo
                         el.descripcion = ti.Descripcion
                     }
@@ -176,17 +171,17 @@ export default function Preview () {
             
         }
         
-    }, [total, estadoTotal, estadoSubTotal])
+    }, [total, estadoSubTotal])
 
     return(
         <div>
             <NavBar/>
             {
-                cart.length == 0 ? <Typography> El carrito se encuentra vacio </Typography> : 
+                cart.length == 0 ? <Typography> El carrito se encuentra vacio  </Typography> : 
             
                 <Box sx={{ width: '80%', display: 'flex', flexDirection: 'column', margin: 'auto', marginTop: '120px', padding: '15px' }} border='solid 0px' boxShadow='5px 2px 15px' >
                                 <Grid margin='auto' >
-                                    <Typography fontSize={30} >Carrito de Ventas</Typography>
+                                    <Typography fontSize={40} >Carrito de Ventas <AddShoppingCartIcon fontSize="50px" /></Typography>
                                 </Grid>
                                 <Grid container direction='row' gap={5} >
                                     <Grid item xs={6} container direction='column' padding={2} alignItems={'center'} >
@@ -207,23 +202,27 @@ export default function Preview () {
                                                                 Lugar: {el.lugar} 
                                                             </Typography> 
                                                             <Typography variant="h6" component={'p'}>
+                                                                Precio por Unidad: {formatearPrecio(el.precio_U)} 
+                                                            </Typography> 
+                                                            <Typography variant="h6" component={'p'}>
+                                                                Stock: {el.stock} 
+                                                            </Typography> 
+                                                            <Typography variant="h6" component={'p'}>
                                                                 <Grid container direction={'row'} margin={1} >
                                                                     <Grid xs={6} item > 
                                                                         <Typography variant="h6" component={'p'}>
-                                                                        Cantidad: { el.cantidad
-                                                                        //cantidades[index]
-                                                                        }
+                                                                        Cantidad: { el.cantidad }
                                                                         </Typography>
                                                                     </Grid>
                                                                     <Grid xs={4} item > 
                                                                         <Button variant="contained" color="secondary" size="small"
                                                                             onClick={() => modifyQuantity(el.id, -1)}
-                                                                        >-</Button>
+                                                                        ><Typography fontSize={'15px'} > - </Typography></Button>
                                                                     </Grid>
                                                                     <Grid xs={1} item > 
                                                                         <Button variant="contained" color="secondary" size="small"
                                                                             onClick={() => modifyQuantity(el.id, 1)}
-                                                                        >+</Button>
+                                                                        > <Typography fontSize={'15px'} > + </Typography></Button>
                                                                     </Grid>
                                                                 </Grid>
                                                             </Typography>
@@ -235,17 +234,13 @@ export default function Preview () {
                                                                 SubTotal: {formatearPrecio(el.subTotal) }
                                                             </Typography>
                                                         </Grid>
-                                                        <Grid item xs={6} align={'center'} >
-                                                            <Tooltip title="Sacar de Carrito">
-                                                                <Button size="small" variant="contained" color='error' onClick={()=>{deletePordCart(el.id)}} ><DeleteIcon /></Button>
-                                                            </Tooltip>
-                                                        </Grid>
+                                                        
                                                         { el.descuento == undefined ? 
-                                                        <Grid item xs={6} align={'center'} >
+                                                        <Grid item xs={2} align={'center'}  >
                                                             <Tooltip title="aplicar descuento a producto">
                                                                 <Button size="small" variant="contained" color='success' onClick={()=>{
                                                                     Swal.fire({
-                                                                        title: "Aplique numero de Descuento",
+                                                                        title: "Ingrese Descuento",
                                                                         input: "number",
                                                                         inputAttributes: {
                                                                           autocapitalize: "off"
@@ -260,13 +255,13 @@ export default function Preview () {
                                                                         } 
                                                                         
                                                                       });
-                                                                }} >%</Button>
+                                                                }} > <PercentIcon/></Button>
                                                             </Tooltip>
                                                         </Grid>
                                                         
                                                         :
                                                         
-                                                        <Grid item xs={6} align={'center'} >
+                                                        <Grid item xs={2} align={'center'} >
                                                             <Tooltip title="aplicar descuento a producto">
                                                                 <Button size="small" variant="contained" color='error' onClick={()=>{
                                                                     Swal.fire({
@@ -285,17 +280,22 @@ export default function Preview () {
                                                                         } 
                                                                         
                                                                       });
-                                                                }} >%</Button>
+                                                                }} > <PercentIcon/> </Button>
                                                             </Tooltip>
                                                         </Grid>
                                                         
                                                         }
-                                                </Grid>
+                                                        <Grid item xs={2} align={'center'} >
+                                                            <Tooltip title="Sacar de Carrito">
+                                                                <Button size="small" variant="contained" color='error' onClick={()=>{deletePordCart(el.id)}} ><DeleteIcon /></Button>
+                                                            </Tooltip>
+                                                        </Grid>
+                                            </Grid>
                                         })}
                                         
                                     </Grid>
                                     <Grid item xs={5} container direction="row" alignContent='flex-start'>
-                                            <Typography variant="h4" component="h2" margin={2} >Datos Cliente:</Typography>
+                                            <Typography variant="h4" component="h2" margin={4} >Datos Cliente:</Typography>
                                             <Grid container direction="row" spacing={4} onSubmit={handleSubmit} >
                                                 <Grid item xs={6} container direction='column' spacing={2} >
                                                     <Grid item xs={2}>
@@ -343,8 +343,8 @@ export default function Preview () {
                                 <Grid container padding={2} direction='row' width='100%' >
                                     <Grid item xs={4}>
                                         <Typography variant="h7" component={'h5'} >
-                                            { estadoTotal ? <div>
-                                                Descuento del {descuentos}% sobre total
+                                            { estadoSubTotal ? <div>
+                                                Con Descuento
                                             </div> :
                                             <div></div>
                                             }
@@ -355,38 +355,6 @@ export default function Preview () {
                                         <Link to = '/inicio' >
                                             <Button variant="contained" color='error' sx={{margin : '5px'}} >volver</Button>
                                         </Link>
-                                        { estadoTotal ? 
-                                        <Tooltip title="Quitar Descuento">
-                                            <Button variant="contained" color='error' sx={{margin : '5px'}}  onClick={ ()=>{
-                                                setEstadoTotal(false)
-                                                setDecuentos(null)
-                                                   
-                                            }} > - <PercentIcon/> </Button>
-                                        </Tooltip> : 
-                                        
-                                        <Tooltip title="Aplicar Descuento al Total">
-                                            <Button variant="contained" color='primary' sx={{margin : '5px'}}  onClick={ ()=>{
-                                                Swal.fire({
-                                                    title: "Aplique numero de Descuento",
-                                                    input: "number",
-                                                    inputAttributes: {
-                                                      autocapitalize: "off"
-                                                    },
-                                                    showCancelButton: true,
-                                                    confirmButtonText: "Look up",
-                                                    showLoaderOnConfirm: true,
-                                                  }).then( (result) => {
-                                                    if (result.isConfirmed){
-                                                        console.log(result.value);
-                                                        setDecuentos(result.value)
-                                                        descuentoTotal(result.value, total)
-                                                    } 
-                                                    
-                                                  });
-                                            }} > <PercentIcon/> </Button>
-                                        </Tooltip>
-                                        }
-                                        
                                     </Grid>
                                     <Box sx={{ flexGrow: 5 }} />
                                     <Grid item xs={2}  alignSelf='flex-end'>
@@ -406,7 +374,7 @@ export default function Preview () {
                                                     'cliente': cliente,
                                                     'cart': cart,
                                                     'total': total,
-                                                    'descuento': descuentos,
+                                                    'estadoDesc': estadoSubTotal,
                                                     'id_venta': ''
                                                 }
                                                 const respons = await registrarVenta(info)
@@ -417,8 +385,9 @@ export default function Preview () {
                                                     router('/dashboard')
                                                 }else{
                                                     alert('error')
-                                                }
                                             }
+                                        }
+                                        
                                             
                                         }} >
                                             Vender 

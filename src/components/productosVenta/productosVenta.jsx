@@ -91,9 +91,12 @@ export default function ProductosVenta() {
               throw new Error('problemas al consultar en la navegacion');
             }
             const data = await response.json();
-            console.log(data.response);
-            setSold(data.response[0].id_producto)       
-            setFrecuencia(data.response[0].frecuencia)      
+            productos.map((el, index)=>{
+                if (el.id == data.response[0].id_producto) {
+                    setSold(index)       
+                    setFrecuencia(data.response[0].frecuencia)              
+                }                
+            })      
           } catch (error) {
             let response = { status: 500 }
             console.error('problemas al obtener estados:', error);

@@ -9,7 +9,7 @@ import ReplyIcon from '@mui/icons-material/Reply';
 import { useNavigate } from 'react-router-dom';
 import InfoProducts from '../../components/infoProducts/infoProducts';
 import NavBar from '../../components/navbar/navBar';
-import PorductDetail from '../productDetail/productDetail';
+import PorductDetail from '../../components/productDetail/productDetail.jsx';
 
 
 const URL = import.meta.env.VITE_BACKEND_URL
@@ -102,9 +102,12 @@ export default function Productos() {
               throw new Error('problemas al consultar en la navegacion');
             }
             const data = await response.json();
-            console.log(data.response);
-            setSold(data.response[0].id_producto)       
-            setFrecuencia(data.response[0].frecuencia)      
+            productos.map((el, index)=>{
+                if (el.id == data.response[0].id_producto) {
+                    setSold(index)       
+                    setFrecuencia(data.response[0].frecuencia)              
+                }                
+            })
         } catch (error) {
             let response = { status: 500 }
             console.error('problemas al obtener estados:', error);
