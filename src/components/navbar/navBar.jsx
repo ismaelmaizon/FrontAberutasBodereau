@@ -146,7 +146,7 @@ export default function NavBar() {
           </Link>
           <Button sx={{color: 'white'}} onClick={ async () =>{
             try {
-              const response = await fetch(`http://${URL}/api/logins/logout`, {
+              const response = await fetch(`${URL}/api/logins/logout`, {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json',
