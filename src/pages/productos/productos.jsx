@@ -48,7 +48,7 @@ export default function Productos() {
         getTipos()
 
         try {
-            const response = await fetch(`http://${URL}/api/productos/productos`, {
+            const response = await fetch(`${URL}/api/productos/productos`, {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json'
@@ -85,7 +85,7 @@ export default function Productos() {
 
     const getProductMostSold = async () => {
         try {
-            const response = await fetch(`http://${URL}/api/productos/productoMostSold`,{
+            const response = await fetch(`${URL}/api/productos/productoMostSold`,{
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json'

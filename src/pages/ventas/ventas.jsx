@@ -45,7 +45,7 @@ export default function Ventas() {
 
     const getVentas = async () =>{
         try {
-            const response = await fetch(`http://${URL}/api/ventas/getVentas`, {
+            const response = await fetch(`${URL}/api/ventas/getVentas`, {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json'

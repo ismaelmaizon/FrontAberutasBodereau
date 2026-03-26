@@ -91,7 +91,7 @@ export default function AddLugar () {
                                         <ListItem
                                         secondaryAction={
                                             <IconButton edge="end" aria-label="delete"  onClick={ async ()=>{
-                                                const response = await fetch(`http://${URL}/api/lugares/lugares/${lugar.id}`,{
+                                                const response = await fetch(`${URL}/api/lugares/lugares/${lugar.id}`,{
                                                     method: 'DELETE',
                                                     headers: {
                                                     'Content-Type': 'application/json'

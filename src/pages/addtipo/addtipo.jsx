@@ -96,7 +96,7 @@ export default function AddTipo () {
                                         <ListItem
                                         secondaryAction={
                                             <IconButton edge="end" aria-label="delete" onClick={ async ()=>{
-                                                const response = await fetch(`http://${URL}/api/tipos//deleteTipo/${tipo.id}`,{
+                                                const response = await fetch(`${URL}/api/tipos//deleteTipo/${tipo.id}`,{
                                                     method: 'DELETE',
                                                     headers: {
                                                     'Content-Type': 'application/json'

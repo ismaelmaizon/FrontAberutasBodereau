@@ -9,7 +9,7 @@ import NavBar from "../../components/navbar/navBar";
 
 export default function Inicio() {
     const {
-        getLocal, setview, view,
+        getLocal, setview,
         productoUbi, lugares, setInfoprod, 
     } = useContext(MiContexto)
 
@@ -28,13 +28,8 @@ export default function Inicio() {
         })
         setInfoprod(info)    
         // Usar la función para obtener una cookie llamada "miCookie"
-        const userView = getLocal('view');
-        console.log(userView);
-        
+        const userView = getLocal('view');        
         setview(userView)
-        console.log(view);
-        
-                
     }, [])
 
     return (

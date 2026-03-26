@@ -20,9 +20,7 @@ const CartProvider = ( { children } ) => {
   //get cookie
   const [view, setview] = useState('')
   const getLocal = (name) => {
-    const value = localStorage.getItem(name)
-    console.log(value);
-    
+    const value = localStorage.getItem(name)    
     if (value != null) {  
       return value
     }
@@ -32,7 +30,7 @@ const CartProvider = ( { children } ) => {
   const [estados, setEstados] = useState([])
   const getEstados = async () =>{
     try {
-        const response = await fetch(`http://${URL}/api/estados/getEstados`,{
+        const response = await fetch(`${URL}/api/estados/getEstados`,{
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -65,7 +63,7 @@ const CartProvider = ( { children } ) => {
         Descripcion: data.Descripcion 
       }
       try {
-        const response = await fetch( `http://${URL}/api/tipos/createTipo`, {
+        const response = await fetch( `${URL}/api/tipos/createTipo`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -93,7 +91,7 @@ const CartProvider = ( { children } ) => {
   const [tipos, setTipos] = useState([])
   const getTipos = async () =>{
     try {
-        const response = await fetch(`http://${URL}/api/tipos/getTipos`,{
+        const response = await fetch(`${URL}/api/tipos/getTipos`,{
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -124,7 +122,7 @@ const CartProvider = ( { children } ) => {
       fullname: data.fullname
     }
     try {
-      const response = await fetch(`http://${URL}/api/lugares/lugares`, {
+      const response = await fetch(`${URL}/api/lugares/lugares`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -152,7 +150,7 @@ const CartProvider = ( { children } ) => {
   const [lugares, setLugares] = useState([])
   const getLugares = async () =>{
       try {
-          const response = await fetch(`http://${URL}/api/lugares/lugares`, {
+          const response = await fetch(`${URL}/api/lugares/lugares`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -185,7 +183,7 @@ const CartProvider = ( { children } ) => {
   const [producto, setProducto] = useState([])
   const getProducto = async (id) =>{
       try {
-          const response = await fetch(`http://${URL}/api/productos/producto/${id}`, {
+          const response = await fetch(`${URL}/api/productos/producto/${id}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -216,7 +214,7 @@ const CartProvider = ( { children } ) => {
   const [infoprod, setInfoprod] = useState([])
   const getUbiProducto = async (id) =>{
     try {
-        const response = await fetch(`http://${URL}/api/lugaresProd/getUbicacionProducto/${id}`, {
+        const response = await fetch(`${URL}/api/lugaresProd/getUbicacionProducto/${id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -249,7 +247,7 @@ const CartProvider = ( { children } ) => {
   const [productsLug, setProductsLug] = useState([])
   const getProductosLugar = async (id) =>{
     try {
-          const response = await fetch(`http://${URL}/api/lugaresProd/getProductosLugar/${id}`, {
+          const response = await fetch(`${URL}/api/lugaresProd/getProductosLugar/${id}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -279,7 +277,7 @@ const CartProvider = ( { children } ) => {
     console.log(id);
     
     try {
-      const response = await fetch(`http://${URL}/api/lugaresProd/deleteProductoLugar/${id}`, {
+      const response = await fetch(`${URL}/api/lugaresProd/deleteProductoLugar/${id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -327,7 +325,7 @@ const CartProvider = ( { children } ) => {
       formData.append('file',file); // 'archivo' debe ser el archivo que deseas enviar
       formData.append('prod', JSON.stringify(prod)); // Puedes agregar otros datos como un JSON stringificado
 
-      const response = await fetch(`http://${URL}/api/productos/producto`, {
+      const response = await fetch(`${URL}/api/productos/producto`, {
         method: 'POST',
         body: formData, 
         credentials: 'include'
@@ -373,7 +371,7 @@ const CartProvider = ( { children } ) => {
     
     try {
       
-      const response = await fetch(`http://${URL}/api/productos/updateProduct`, {
+      const response = await fetch(`${URL}/api/productos/updateProduct`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -407,7 +405,7 @@ const CartProvider = ( { children } ) => {
       formData.append('file',file); // 'archivo' debe ser el archivo que deseas enviar
       formData.append('id', JSON.stringify(id)); // Puedes agregar otros datos como un JSON stringificado
 
-      const response = await fetch(`http://${URL}/api/productos/addimgProduct`, {
+      const response = await fetch(`${URL}/api/productos/addimgProduct`, {
         method: 'POST',
         body: formData,
         credentials: 'include'
@@ -432,7 +430,7 @@ const CartProvider = ( { children } ) => {
   const [imgs, setImgs] = useState([])
   const getProductoIms = async (id) =>{
     try {
-      const response = await fetch(`http://${URL}/api/productos/productoimg/${id}`, {
+      const response = await fetch(`${URL}/api/productos/productoimg/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -459,7 +457,7 @@ const CartProvider = ( { children } ) => {
   //eliminar producto
   const deleteProducto = async (id) => {
     try {
-      const response = await fetch(`http://${URL}/api/productos/producto/${id}`, {
+      const response = await fetch(`${URL}/api/productos/producto/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -485,7 +483,7 @@ const CartProvider = ( { children } ) => {
   //eliminar imagen de producto
   const deleteProductoImg = async (id) => {
     try {
-      const response = await fetch(`http://${URL}/api/productos/deleteproductoImg/${id}`, {
+      const response = await fetch(`${URL}/api/productos/deleteproductoImg/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -517,7 +515,7 @@ const CartProvider = ( { children } ) => {
       "stock": stock
     }
     try {
-      const response = await fetch(`http://${URL}/api/lugaresProd/addProductoLugar/${Idg}`, {
+      const response = await fetch(`${URL}/api/lugaresProd/addProductoLugar/${Idg}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -549,7 +547,7 @@ const CartProvider = ( { children } ) => {
       "procedimiento": procedimiento,
     }
     try {
-      const response = await fetch(`http://${URL}/api/lugaresProd/updateProductoLugar/${Idg}`, {
+      const response = await fetch(`${URL}/api/lugaresProd/updateProductoLugar/${Idg}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -582,7 +580,7 @@ const CartProvider = ( { children } ) => {
     console.log(id);
     
     try {
-      const response = await fetch(`http://${URL}/api/lugaresProd/upDateStockProducto/${id}`, {
+      const response = await fetch(`${URL}/api/lugaresProd/upDateStockProducto/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -622,7 +620,7 @@ const CartProvider = ( { children } ) => {
     }
     console.log(venta);
     try {
-      const response = await fetch(`http://${URL}/api/ventas/registrarVenta`, {
+      const response = await fetch(`${URL}/api/ventas/registrarVenta`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -654,7 +652,7 @@ const CartProvider = ( { children } ) => {
   const [ventainfProds, setVentainfProds] = useState([])
   const getVenta = async (id) =>{
     try {
-        const response = await fetch(`http://${URL}/api/ventas/getVentaId/${id}`, {
+        const response = await fetch(`${URL}/api/ventas/getVentaId/${id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -701,7 +699,7 @@ const CartProvider = ( { children } ) => {
     console.log(data);
     
     try {
-      const response = await fetch(`http://${URL}/api/ventas/registrarProdVenta`, {
+      const response = await fetch(`${URL}/api/ventas/registrarProdVenta`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -750,7 +748,7 @@ const CartProvider = ( { children } ) => {
       formData.append('upVenta',upVenta); // 'archivo' debe ser el archivo que deseas enviar
       formData.append('cart', cart); // Puedes agregar otros datos como un JSON stringificado
 
-      const response = await fetch(`http://${URL}/api/ventas/updateVenta`, {
+      const response = await fetch(`${URL}/api/ventas/updateVenta`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -777,7 +775,7 @@ const CartProvider = ( { children } ) => {
   //eliminar venta
   const deleteVenta = async (id) =>{
     try {
-      const response = await fetch(`http://${URL}/api/ventas/deleteVenta/${id}`, {
+      const response = await fetch(`${URL}/api/ventas/deleteVenta/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'

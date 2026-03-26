@@ -1,8 +1,7 @@
-import { AppBar, Box, Button, Drawer, Toolbar, Typography } from "@mui/material";
-import { Fragment, useContext, useState } from "react";
+import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
+import { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
-import { MiContexto } from "../context/context";
 
 
 export default function Footer() {

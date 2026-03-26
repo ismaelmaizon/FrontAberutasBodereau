@@ -114,7 +114,7 @@ export default function SignInSide() {
               />
               <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} onClick={ async () =>{
                   try {
-                    const response = await fetch(`http://${URL}/api/logins/log`, {
+                    const response = await fetch(`${URL}/api/logins/log`, {
                       method: 'POST',
                       headers: {
                         'Content-Type': 'application/json',
@@ -131,9 +131,7 @@ export default function SignInSide() {
                         timer: 1500
                       });
                     }else{
-                      console.log(response);
                       const data = await response.json();
-                      console.log(data);
                       localStorage.setItem('view', data.response)
                       router('/inicio')
                     }

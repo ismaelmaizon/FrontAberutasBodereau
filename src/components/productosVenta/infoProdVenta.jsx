@@ -199,7 +199,7 @@ export default function InfoProdVenta() {
                                         sx={{ display: 'flex', margin: 'auto' ,height: 250, width: 200,  ":hover": {
                                             transform: 'scale(1.1)'
                                           }, }}
-                                        image={`http://${URL}/static/${imgs[num].url}`}
+                                        image={`${URL}/static/${imgs[num].url}`}
                                         title="green iguana"
                                     ></CardMedia>
                                     
@@ -211,7 +211,7 @@ export default function InfoProdVenta() {
                                     <Grid item xs={2} margin='auto' bgcolor={red} >
                                         <Button size="small" color="secondary" variant="contained" onClick={ async ()=>{
                                             Swal.fire({
-                                                imageUrl: `http://${URL}/static/${imgs[num].url}`,
+                                                imageUrl: `${URL}/static/${imgs[num].url}`,
                                                 imageHeight: 650,
                                                 imageAlt: "A tall image"
                                               });
